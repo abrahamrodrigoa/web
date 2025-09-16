@@ -496,34 +496,33 @@
 	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
 	createChat({
-	webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
-	webhookConfig: {
-		method: 'POST',
-		headers: {}
-	},
-	target: '#n8n-chat',
-	mode: 'window',
-	chatInputKey: 'chatInput',
-	chatSessionKey: 'sessionId',
-	loadPreviousSession: true,
-	metadata: {},
-	showWelcomeScreen: false,
-	defaultLanguage: 'en',
-	initialMessages: [
-		'Hi there! 👋',
-		'My name is Nathan. How can I assist you today?'
-	],
-	i18n: {
-		en: {
-			title: 'Hi there! 👋',
-			subtitle: "Start a chat. We're here to help you 24/7.",
-			footer: '',
-			getStarted: 'New Conversation',
-			inputPlaceholder: 'Type your question..',
-		},
-	},
-	enableStreaming: false,
-});
+            webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
+            // Configuraciones personalizadas para mejorar la experiencia
+            initialMessages: [
+                '¡Hola! 👋 Soy tu asistente para consultas sobre ensayos de laboratorio.',
+                'Puedo ayudarte con información sobre:',
+                '• Ensayos de Suelos 🏗️',
+                '• Ensayos de Hormigones 🏢', 
+                '• Ensayos de Asfaltos 🛣️',
+                '• Normas ASTM y procedimientos',
+                '¿En qué puedo ayudarte hoy?'
+            ],
+            chatWindowTitle: '🔬 Asistente de Ensayos de Laboratorio',
+            placeholder: 'Pregunta sobre ensayos de laboratorio...',
+            chatInputKey: 'chatInput',
+            welcomeMessage: '¡Bienvenido! Pregúntame sobre cualquier ensayo de laboratorio.',
+            // Configuraciones de estilo
+            theme: 'light',
+            showWelcomeScreen: true,
+            allowFileUploads: false,
+            allowImageUploads: false,
+            // Posición del botón
+            position: 'bottom-right',
+            // Configuraciones de comportamiento
+            autoOpen: false,
+            showTimestamp: true
+        });
+
         
        
     </script>
