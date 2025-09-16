@@ -498,7 +498,17 @@
 	createChat({
             webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
             // Configuraciones personalizadas para mejorar la experiencia
-            initialMessages: [
+        i18n: {
+		en: {
+			title: 'Hola, 🔬 Soy tu Asistente de Ensayos de Laboratorio 👋',
+			subtitle: "Inicia un chat. Estaremos para ayudarte 24/7.",
+			footer: '',
+			getStarted: 'Nueva Conversación',
+			inputPlaceholder: 'Cual es tu pregunta ..',
+		},
+	}, 
+		
+		initialMessages: [
                 '¡Hola! 👋 Soy tu asistente para consultas sobre ensayos de laboratorio.',
                 'Puedo ayudarte con información sobre:',
                 '• Ensayos de Suelos 🏗️',
@@ -507,18 +517,7 @@
                 '• Normas ASTM y procedimientos',
                 '¿En qué puedo ayudarte hoy?'
             ],
-            
-		i18n: {
-		en: {
-			title: 'Hola, 🔬 Soy tu Asistente de Ensayos de Laboratorio 👋',
-			subtitle: "Inicia un chat. Estaremos para ayudarte 24/7.",
-			footer: '',
-			getStarted: 'Nueva Conversación',
-			inputPlaceholder: 'Cual es tu pregunta ..',
-		},
-	},
-
-		
+	
 //		chatWindowTitle: '🔬 Asistente de Ensayos de Laboratorio',
 //            placeholder: 'Pregunta sobre ensayos de laboratorio...',
 //            chatInputKey: 'chatInput',
