@@ -489,51 +489,78 @@
         </div>
     </div>
 </body>
+
+
+  <style>
+    /* ==============================
+       🎨 Estilos personalizados n8n Chat
+       ============================== */
+
+    /* Cambiar tamaño de la ventana del chat */
+    .n8n-chat {
+      --chat-window-width: 500px !important;   /* Ancho del chat */
+      --chat-window-height: 700px !important;  /* Alto del chat */
+    }
+
+    /* Cambiar tamaño de letra en la conversación */
+    .n8n-chat .chat-message {
+      font-size: 13px !important;   /* Ajusta según prefieras */
+      line-height: 1.4 !important;
+    }
+
+    /* Diferenciar mensajes del usuario y del bot */
+    .n8n-chat .chat-message.user {
+      font-size: 13px !important;
+    }
+
+    .n8n-chat .chat-message.bot {
+      font-size: 13px !important;
+    }
+
+    /* Permitir redimensionar manualmente la ventana desde la esquina */
+    .chat-container {
+      resize: both !important;
+      overflow: auto !important;
+      min-width: 250px;
+      min-height: 300px;
+      max-width: 800px;
+      max-height: 900px;
+    }
+  </style>
+	
 	
 <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
 
-<script type="module">
-	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-
-	createChat({
-            webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
-            // Configuraciones personalizadas para mejorar la experiencia
-        i18n: {
-		en: {
-			title: 'Hola, 🔬 Soy tu Asistente de Ensayos de Laboratorio 👋',
-			subtitle: "Inicia un chat. Estaremos para ayudarte 24/7.",
-			footer: '',
-			getStarted: 'Nueva Conversación',
-			inputPlaceholder: 'Cual es tu pregunta ..',
-		},
-	}, 
-		
-		initialMessages: [
-                '¡Hola! 👋 Soy tu asistente para consultas sobre ensayos de laboratorio.',
-                'Puedo ayudarte con información sobre:',
-                '• Ensayos de Suelos 🏗️',
-                '• Ensayos de Hormigones 🏢', 
-                '• Ensayos de Asfaltos 🛣️',
-                '• Normas ASTM y procedimientos',
-                '¿En qué puedo ayudarte hoy?'
-            ],
-	
-//		chatWindowTitle: '🔬 Asistente de Ensayos de Laboratorio',
-//            placeholder: 'Pregunta sobre ensayos de laboratorio...',
-//            chatInputKey: 'chatInput',
-//            welcomeMessage: '¡Bienvenido! Pregúntame sobre cualquier ensayo de laboratorio.',
-            // Configuraciones de estilo
-            theme: 'light',
-            showWelcomeScreen: true,
-            allowFileUploads: false,
-            allowImageUploads: false,
-            // Posición del botón
-            position: 'bottom-right',
-            // Configuraciones de comportamiento
-            autoOpen: false,
-            showTimestamp: true
-        });
-       
+	<script>
+createChat({
+    webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
+    i18n: {
+        en: {
+            title: 'Hola, 🔬 Soy tu Asistente de Ensayos de Laboratorio 👋',
+            subtitle: "Inicia un chat. Estaremos para ayudarte 24/7.",
+            footer: '',
+            getStarted: 'Nueva Conversación',
+            inputPlaceholder: 'Cual es tu pregunta ..',
+        },
+    },
+    initialMessages: [
+        '¡Hola! 👋 Soy tu asistente para consultas sobre ensayos de laboratorio.',
+        'Puedo ayudarte con información sobre:',
+        '• Ensayos de Suelos 🏗️',
+        '• Ensayos de Hormigones 🏢', 
+        '• Ensayos de Asfaltos 🛣️',
+        '• Normas ASTM y procedimientos',
+        '¿En qué puedo ayudarte hoy?'
+    ],
+    theme: 'light',
+    showWelcomeScreen: true,
+    allowFileUploads: false,
+    allowImageUploads: false,
+    position: 'bottom-right',
+    autoOpen: false,
+    showTimestamp: true
+});
 </script>
+
 
 </html>
