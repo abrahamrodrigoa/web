@@ -490,23 +490,12 @@
     </div>
 
     <script type="module">
-	import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
 
-	createChat({
-            webhookUrl: 'http://localhost:5678/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat',
+        createChat({
+            webhookUrl: 'YOUR_PRODUCTION_WEBHOOK_URL',
             // Configuraciones personalizadas para mejorar la experiencia
-        i18n: {
-		en: {
-			title: 'Hola, 🔬 Soy tu Asistente de Ensayos de Laboratorio 👋',
-			subtitle: "Inicia un chat. Estaremos para ayudarte 24/7.",
-			footer: '',
-			getStarted: 'Nueva Conversación',
-			inputPlaceholder: 'Cual es tu pregunta ..',
-
-		},
-	}, 
-		
-		initialMessages: [
+            initialMessages: [
                 '¡Hola! 👋 Soy tu asistente para consultas sobre ensayos de laboratorio.',
                 'Puedo ayudarte con información sobre:',
                 '• Ensayos de Suelos 🏗️',
@@ -515,11 +504,10 @@
                 '• Normas ASTM y procedimientos',
                 '¿En qué puedo ayudarte hoy?'
             ],
-	
-//		chatWindowTitle: '🔬 Asistente de Ensayos de Laboratorio',
-//            placeholder: 'Pregunta sobre ensayos de laboratorio...',
-//            chatInputKey: 'chatInput',
-//            welcomeMessage: '¡Bienvenido! Pregúntame sobre cualquier ensayo de laboratorio.',
+            chatWindowTitle: '🔬 Asistente de Ensayos de Laboratorio',
+            placeholder: 'Pregunta sobre ensayos de laboratorio...',
+            chatInputKey: 'chatInput',
+            welcomeMessage: '¡Bienvenido! Pregúntame sobre cualquier ensayo de laboratorio.',
             // Configuraciones de estilo
             theme: 'light',
             showWelcomeScreen: true,
@@ -531,9 +519,6 @@
             autoOpen: false,
             showTimestamp: true
         });
-       
-</script>
-
-    
+    </script>
 </body>
 </html>
