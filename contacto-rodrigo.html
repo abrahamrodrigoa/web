@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es-ES">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Contacto - IA-ARAT</title>
+  <meta name="description" content="Contacto IA-ARAT - robotito_ARAT para apoyo a la Dirección de Obra" />
+  <link rel="icon" href="data:," />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#fafafa; --fg:#111; --muted:#555; --brand:#0a7; --card:#fff; --br:16px; }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--fg);font:16px/1.5 Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif}
+    a{color:var(--brand);text-decoration:none}
+    header{background:#fff;border-bottom:1px solid #eee;position:sticky;top:0;z-index:10}
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .nav{display:flex;align-items:center;gap:16px}
+    .nav img{height:44px;width:auto;border-radius:8px}
+    .title{font-weight:600;font-size:18px}
+    main .grid{display:grid;grid-template-columns:1.1fr .9fr;gap:28px}
+    @media (max-width:900px){ main .grid{grid-template-columns:1fr} }
+    .card{background:var(--card);border:1px solid #eee;border-radius:var(--br);padding:24px}
+    h1{margin:.2rem 0 1rem;font-size:28px}
+    .desc{color:var(--muted);margin-bottom:16px}
+    ul.info{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+    ul.info li{display:flex;gap:10px;align-items:center}
+    .badge{display:inline-block;background:#e8fff7;color:#055; padding:.2rem .55rem;border-radius:999px;font-size:12px;border:1px solid #cfeee5}
+    .map{aspect-ratio:16/10;width:100%;border:0;border-radius:12px;box-shadow:0 1px 0 rgba(0,0,0,.04)}
+    form .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:700px){ form .row{grid-template-columns:1fr} }
+    label{display:block;font-weight:600;margin:.6rem 0 .25rem}
+    input,textarea{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:10px;background:#fff}
+    textarea{min-height:140px;resize:vertical}
+    button{margin-top:12px;border:0;background:var(--brand);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;cursor:pointer}
+    footer{padding:30px 0;color:#777;text-align:center}
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="wrap nav">
+      <!-- LOGO IZQUIERDA (ruta local pedida) -->
+      <a href="#">
+        <img src="file:///d:/IAarat/logo-rodri.png" alt="Logo IA-ARAT">
+      </a>
+      <div class="title">IA-ARAT · Contacto</div>
+    </div>
+  </header>
+
+  <main class="wrap" style="padding:28px 16px">
+    <div class="grid">
+
+      <!-- INFO CONTACTO -->
+      <section class="card">
+        <h1>Contacto</h1>
+
+        <!-- Descripción reemplazada -->
+        <p class="desc">
+          Esta web incluye un <span class="badge">Multi Agente IA-ARAT</span> denominado <strong>robotito_ARAT</strong>,
+          cuyo fin es apoyar en tareas diarias de la Dirección de Obra.
+        </p>
+
+        <ul class="info">
+          <li>📍&nbsp;
+            <a href="https://maps.app.goo.gl/GbzzWurTdaeEgSPm6" target="_blank" rel="noopener">
+              Calle 15 de Abril Nro. 759, Barrio El Molino, Tarija-Bolivia.
+            </a>
+          </li>
+          <li>📞&nbsp; <a href="tel:+59178257710">Tel. (591) 78257710</a></li>
+          <li>✉️&nbsp; <a href="mailto:abrahamrodrigoa@gmail.com">abrahamrodrigoa@gmail.com</a></li>
+        </ul>
+
+        <div style="margin-top:16px">
+          <a class="badge" href="https://maps.app.goo.gl/GbzzWurTdaeEgSPm6" target="_blank" rel="noopener">Abrir en Google Maps</a>
+        </div>
+
+        <div style="margin-top:16px">
+          <!-- Mapa apuntando al enlace indicado -->
+          <iframe class="map"
+            src="https://maps.app.goo.gl/GbzzWurTdaeEgSPm6"
+            allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </section>
+
+      <!-- FORMULARIO (envía registros a correo indicado) -->
+      <section class="card">
+        <h2 style="margin-top:0">Envíanos un mensaje</h2>
+        <!-- Importante: mailto envía por cliente de correo del usuario -->
+        <form action="mailto:abrahamrodrigoa@gmail.com" method="post" enctype="text/plain">
+          <div class="row">
+            <div>
+              <label for="nombre">Nombre</label>
+              <input id="nombre" name="Nombre" required />
+            </div>
+            <div>
+              <label for="telefono">Teléfono</label>
+              <input id="telefono" name="Teléfono" inputmode="tel" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="email">Email</label>
+              <input id="email" name="Email" type="email" required />
+            </div>
+            <div>
+              <label for="asunto">Asunto</label>
+              <input id="asunto" name="Asunto" />
+            </div>
+          </div>
+
+          <div>
+            <label for="mensaje">Mensaje</label>
+            <textarea id="mensaje" name="Mensaje" required></textarea>
+          </div>
+
+          <button type="submit">Enviar</button>
+        </form>
+
+        <p class="desc" style="margin-top:12px">
+          Al presionar <em>Enviar</em> se abrirá tu cliente de correo con los datos del formulario para remitirlos a
+          <strong>abrahamrodrigoa@gmail.com</strong>.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Sin imágenes inferiores (se removió cualquier banner/galería de la parte baja) -->
+
+  <footer>
+    <div class="wrap">
+      &copy; <span id="y"></span> IA-ARAT • Tarija, Bolivia
+    </div>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
