@@ -1,5 +1,4 @@
-# Apply the user's new modifications and save a new HTML version
-html2 = r"""<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
@@ -12,7 +11,6 @@ html2 = r"""<!DOCTYPE html>
       --bubble:#ffffff; --bubbleUser:#fff7cc; --chip:#0000000a;
       --accent:#a16207;
       --risk:#ef4444;
-      --blue:#3b82f6; --green:#22c55e; --yellow:#facc15; --red:#ef4444;
       --bg-a:#f2f3f5; --bg-b:#e9ebee;
     }
     *{box-sizing:border-box}
@@ -21,10 +19,28 @@ html2 = r"""<!DOCTYPE html>
       margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
       color:var(--ink);
       display:flex; flex-direction:column;
-      background: radial-gradient(900px 400px at 85% 10%, #ffe68055, transparent 60%),
-                  linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, #fff1b3 100%);
+      background:
+        radial-gradient(900px 400px at 85% 10%, #ffe68055, transparent 60%),
+        linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, #fff1b3 100%);
       background-attachment: fixed;
+      position: relative;
     }
+    /* ===== Fixed, behind-the-page background for IA ===== */
+    body.theme-IA::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      background:
+        linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)),
+        url('file:///d:/iaarat/fondo-IA.jpg');
+      background-size:cover;
+      background-position:center;
+      background-repeat:no-repeat;
+    }
+    /* remove image when not IA */
+    body:not(.theme-IA)::before{ content:none; }
+
     .container{max-width:1104px;margin:0 auto;padding:0 16px}
 
     /* ===== Header ===== */
@@ -32,7 +48,8 @@ html2 = r"""<!DOCTYPE html>
       background:rgba(255,255,255,.6); border-bottom:1px solid var(--line);}
     .hdr{display:flex;align-items:center;gap:12px;padding:14px 0}
     .brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
-    .brand img{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
+    /* The logo never changes; source stays constant */
+    .brand img#logo{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);object-fit:cover}
     .brand span{font-weight:700;letter-spacing:.2px}
 
     nav{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
@@ -42,11 +59,9 @@ html2 = r"""<!DOCTYPE html>
     .tab:hover{color:#111827;border-color:#00000022;background:#ffffff;transform:translateY(-1px);box-shadow:0 8px 24px #00000014}
     .tab.active{background:#fde68a;border-color:#fcd34d;color:#111827;box-shadow:0 8px 22px #f59e0b22}
 
-    /* Riesgos: normal por defecto; rojo solo en hover y active */
     .tab.risk:hover{background:#fff1f2;border-color:#fecaca;color:#7f1d1d;box-shadow:0 8px 22px #ef444422}
     .tab.risk.active{background:#fecaca;border-color:#ef4444;color:#7f1d1d;box-shadow:0 8px 22px #ef444433}
 
-    /* Language toggle ES/EN */
     .lang{position:relative}
     .lang-btn{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;
       border:1px solid var(--line); background:#fff; text-decoration:none; color:#111827; cursor:pointer; font-weight:600}
@@ -108,7 +123,6 @@ html2 = r"""<!DOCTYPE html>
     .file-pill .name{max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
     .hint{margin-top:6px;font-size:12px;color:#4b5563}
 
-    /* WhatsApp bottom-left (fixed) */
     .whatsapp-wrap{position:fixed;left:18px;bottom:18px;z-index:60}
 
     @media (max-width:680px){.title{font-size:24px} .panel{height:calc(100dvh - 260px)}}
@@ -118,12 +132,12 @@ html2 = r"""<!DOCTYPE html>
   <header>
     <div class="container hdr">
       <a class="brand" href="#">
-        <!-- Logo desde d:\iaarat\ -->
-        <img src="file:///d:/iaarat/logo-rodri.png" alt="Logo Rodrigo" />
+        <!-- Logo estable desde d:\iaarat\ -->
+        <img id="logo" src="file:///d:/iaarat/logo-rodri.png" alt="Logo Rodrigo" />
         <span>Multi Agente IA-ARAT</span>
       </a>
 
-      <nav id="tabs"></nav>
+      <nav id="tabs" aria-label="Secciones"></nav>
 
       <div class="lang">
         <button id="langBtn" class="lang-btn" type="button" title="Cambiar idioma">ES ⇄ EN</button>
@@ -133,9 +147,12 @@ html2 = r"""<!DOCTYPE html>
 
   <main>
     <div class="container">
-      <h1 id="page-title" class="title"><span class="ia-box" title="IA">IA</span> <span id="page-title-text">Especificaciones Técnicas</span></h1>
+      <h1 class="title">
+        <span class="ia-box" aria-hidden="true">IA</span>
+        <span id="page-title-text" data-i18n="tab.specs">Especificaciones Técnicas</span>
+      </h1>
       <p class="subtitle">
-        Estás en la plataforma única. Canal lógico:
+        <span data-i18n="subtitle.1">Estás en la plataforma única. Canal lógico:</span>
         <code id="botlink-label" class="inline">BOTON_Especificaciones_Técnicas</code>
       </p>
 
@@ -148,28 +165,28 @@ html2 = r"""<!DOCTYPE html>
               <img src="icorobotito.png" alt="robotito_ARAT" />
             </div>
 
-            <button id="fileBtn" type="button" class="btn icon-btn" title="Adjuntar archivo (📎)">
+            <button id="fileBtn" type="button" class="btn icon-btn" title="Adjuntar archivo (📎)" data-i18n-attr="title:attach">
               📎
             </button>
             <input id="fileInput" type="file" style="display:none" />
 
-            <input id="input" type="text" placeholder="Escribe tu mensaje…" />
-            <button type="submit" class="send" aria-label="Enviar">
+            <input id="input" type="text" placeholder="Escribe tu mensaje…" data-i18n-attr="placeholder:placeholder" />
+            <button type="submit" class="send" aria-label="Enviar" data-i18n-attr="aria-label:send">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 11l18-8-8 18-2-7-8-3z" stroke="#0b1230" stroke-width="2" fill="none" />
               </svg>
             </button>
           </div>
           <div class="hint">
-            Canal actual: <code id="botlink" class="inline">BOTON_Especificaciones_Técnicas</code> ·
-            Sesión de <strong id="who">…</strong>
+            <span data-i18n="hint.chan">Canal actual:</span>
+            <code id="botlink" class="inline">BOTON_Especificaciones_Técnicas</code> ·
+            <span data-i18n="hint.session">Sesión de</span> <strong id="who">…</strong>
           </div>
         </form>
       </section>
     </div>
   </main>
 
-  <!-- WhatsApp Link (estilo provisto) -->
   <div class="whatsapp-wrap">
     <a href="https://wa.me/59178257710?text=Hola,%20te%20saluda%20Rodrigo%20%F0%9F%91%8B.%20%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F"
        target="_blank"
@@ -179,13 +196,12 @@ html2 = r"""<!DOCTYPE html>
         <path d="M19.11 17.07c-.26-.13-1.53-.75-1.77-.84s-.41-.13-.58.13-.66.84-.81 1.02-.3.19-.56.06a7.3 7.3 0 0 1-2.14-1.32 8 8 0 0 1-1.49-1.84c-.16-.26 0-.4.12-.53s.26-.3.39-.46.17-.26.26-.43.04-.32-.02-.46-.58-1.4-.8-1.92-.43-.45-.58-.46h-.5a.96.96 0 0 0-.69.32 2.9 2.9 0 0 0-.9 2.15 5 5 0 0 0 1.06 2.67 11.4 11.4 0 0 0 4.38 3.93 14 14 0 0 0 1.43.59 3.44 3.44 0 0 0 1.58.1c.48-.08 1.53-.62 1.75-1.22s.22-1.12.16-1.22-.23-.18-.49-.31z"/>
         <path d="M27.1 4.9A13.5 13.5 0 0 0 16 1 13.7 13.7 0 0 0 2.3 14.84 13.3 13.3 0 0 0 4.5 22L3 29l7.2-1.9a13.9 13.9 0 0 0 6.8 1.8h.01A13.7 13.7 0 0 0 31 15.08 13.5 13.5 0 0 0 27.1 4.9zm-11.1 22a11.6 11.6 0 0 1-5.9-1.6l-.42-.25-4.3 1.1 1.1-4.2-.28-.44a11.6 11.6 0 1 1 10.79 5.38z"/>
       </svg>
-      Contactar por WhatsApp
+      <span data-i18n="wa">Contactar por WhatsApp</span>
     </a>
   </div>
 
   <script>
     /* ================== CONFIG TABS + WEBHOOK ================== */
-    // Orden: IA primero. Quitamos Ayuda.
     const TABS = ["IA","Especificaciones Técnicas","Ensayos de Suelos","Riesgos","Contrato","Contacto"];
 
     const BASE = "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat";
@@ -222,12 +238,12 @@ html2 = r"""<!DOCTYPE html>
 
       nav.innerHTML = TABS.map(tab=>{
         if (tab === "Contacto"){
-          return `<a class="tab${tab===active?' active':''}" href="contacto rodrigo.html">${tab}</a>`;
+          return `<a class="tab${tab===active?' active':''}" href="contacto rodrigo.html" data-i18n-tab="${tab}">${tab}</a>`;
         }
         const href = `${current}?bot=${encodeURIComponent(tab)}`;
         const extraClass = tab === "Riesgos" ? " risk" : "";
         const cls = "tab" + (tab===active ? " active" : "") + extraClass;
-        return `<a class="${cls}" href="${href}">${tab}</a>`;
+        return `<a class="${cls}" href="${href}" data-i18n-tab="${tab}">${tab}</a>`;
       }).join("");
     })();
 
@@ -240,29 +256,27 @@ html2 = r"""<!DOCTYPE html>
     /* ================== THEMES BY BOT ================== */
     function setThemeForBot(name){
       const body = document.body;
-      body.style.background = ""; body.style.backgroundImage = ""; body.style.backgroundColor = "";
-      body.style.backgroundAttachment = "fixed";
-      const plomo = "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #e9ebee 100%)";
+      body.classList.remove("theme-IA");
+      // base plomo/amarillo by default
+      body.style.background =
+        "radial-gradient(900px 400px at 85% 10%, #ffe68055, transparent 60%),"+
+        "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fff1b3 100%)";
 
-      if (name === "Especificaciones Técnicas"){
-        body.style.background = `radial-gradient(900px 400px at 85% 10%, #ffe68055, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fff1b3 100%)`;
-      } else if (name === "Ensayos de Suelos"){
-        body.style.background = `radial-gradient(900px 400px at 85% 10%, #bbf7d055, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dcfce7 100%)`;
+      if (name === "Ensayos de Suelos"){
+        body.style.background =
+          "radial-gradient(900px 400px at 85% 10%, #bbf7d055, transparent 60%),"+
+          "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dcfce7 100%)";
       } else if (name === "Riesgos"){
-        body.style.background = `radial-gradient(900px 400px at 85% 10%, #fecdd355, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fee2e2 100%)`;
+        body.style.background =
+          "radial-gradient(900px 400px at 85% 10%, #fecdd355, transparent 60%),"+
+          "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fee2e2 100%)";
       } else if (name === "Contrato"){
-        body.style.background = `radial-gradient(900px 400px at 85% 10%, #bfdbfe55, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dbeafe 100%)`;
+        body.style.background =
+          "radial-gradient(900px 400px at 85% 10%, #bfdbfe55, transparent 60%),"+
+          "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dbeafe 100%)";
       } else if (name === "IA"){
-        // Fondo con imagen y overlay translúcido
-        const imagenA = "file:///d:/iaarat/fondo-IA.jpg";
-        const imagenB = "file:///d:/iaarat/fondo-IAjpg"; // por si el nombre viene sin punto
-        body.style.backgroundImage =
-          `linear-gradient(rgba(0,0,0,.25), rgba(0,0,0,.25)), url('${imagenA}'), url('${imagenB}')`;
-        body.style.backgroundSize = "cover, cover, cover";
-        body.style.backgroundPosition = "center, center, center";
-        body.style.backgroundRepeat = "no-repeat, no-repeat, no-repeat";
-      } else {
-        body.style.background = plomo;
+        // Enable behind-the-page background image
+        body.classList.add("theme-IA");
       }
     }
     setThemeForBot(activeBot);
@@ -298,19 +312,81 @@ html2 = r"""<!DOCTYPE html>
       });
     }
 
-    /* ================== LANGUAGE TOGGLE ================== */
+    /* ================== IN-PAGE LANG TOGGLE (ES/EN) ================== */
+    const I18N = {
+      ES: {
+        "tab.specs": "Especificaciones Técnicas",
+        "tab.soils": "Ensayos de Suelos",
+        "tab.risks": "Riesgos",
+        "tab.contract": "Contrato",
+        "subtitle.1": "Estás en la plataforma única. Canal lógico:",
+        "attach": "Adjuntar archivo (📎)",
+        "placeholder": "Escribe tu mensaje…",
+        "send": "Enviar",
+        "hint.chan": "Canal actual:",
+        "hint.session": "Sesión de",
+        "wa": "Contactar por WhatsApp",
+        "IA": "IA",
+        "Especificaciones Técnicas":"Especificaciones Técnicas",
+        "Ensayos de Suelos":"Ensayos de Suelos",
+        "Riesgos":"Riesgos",
+        "Contrato":"Contrato",
+        "Contacto":"Contacto"
+      },
+      EN: {
+        "tab.specs": "Technical Specifications",
+        "tab.soils": "Soil Tests",
+        "tab.risks": "Risks",
+        "tab.contract": "Contract",
+        "subtitle.1": "You are on the unified platform. Logic channel:",
+        "attach": "Attach file (📎)",
+        "placeholder": "Type your message…",
+        "send": "Send",
+        "hint.chan": "Current channel:",
+        "hint.session": "Session of",
+        "wa": "Contact via WhatsApp",
+        "IA": "AI",
+        "Especificaciones Técnicas":"Technical Specifications",
+        "Ensayos de Suelos":"Soil Tests",
+        "Riesgos":"Risks",
+        "Contrato":"Contract",
+        "Contacto":"Contact"
+      }
+    };
     const LANG_KEY = "arat_lang";
     let lang = localStorage.getItem(LANG_KEY) || "ES";
     const langBtn = qs("#langBtn");
     langBtn.textContent = "ES ⇄ EN";
 
+    function applyI18n(){
+      const dict = I18N[lang] || I18N.ES;
+      // Simple elements with data-i18n key
+      document.querySelectorAll("[data-i18n]").forEach(el=>{
+        const k = el.getAttribute("data-i18n");
+        if (dict[k]) el.textContent = dict[k];
+      });
+      // Attributes mapping like placeholder/title/aria-label
+      document.querySelectorAll("[data-i18n-attr]").forEach(el=>{
+        const pairs = el.getAttribute("data-i18n-attr").split(","); // e.g. "placeholder:placeholder"
+        pairs.forEach(p=>{
+          const [attr,key] = p.split(":");
+          if (I18N[lang][key]) el.setAttribute(attr, I18N[lang][key]);
+        });
+      });
+      // Tabs text
+      document.querySelectorAll("[data-i18n-tab]").forEach(a=>{
+        const key = a.getAttribute("data-i18n-tab");
+        if (I18N[lang][key]) a.textContent = I18N[lang][key];
+      });
+    }
+    applyI18n();
+
+    // Toggle language. We CANNOT force the browser's built-in translator.
+    // Instead we translate the visible UI strings in-page.
     langBtn.addEventListener("click", ()=>{
-      // Alterna y abre Google Translate en nueva pestaña
-      lang = lang === "ES" ? "EN" : "ES";
+      lang = (lang === "ES") ? "EN" : "ES";
       localStorage.setItem(LANG_KEY, lang);
-      const tl = lang === "EN" ? "en" : "es";
-      const url = `https://translate.google.com/translate?sl=auto&tl=${tl}&u=${encodeURIComponent(location.href)}`;
-      window.open(url, "_blank");
+      applyI18n();
     });
 
     /* ================== CHAT UI ================== */
@@ -424,7 +500,15 @@ html2 = r"""<!DOCTYPE html>
     }
 
     /* ================== STARTUP ================== */
-    bubble("assistant", `Hola ${userName}, estás en ${activeBot}. ¿En qué te ayudo?`);
+    // apply theme
+    setThemeForBot(activeBot);
+
+    // greeting
+    function greet(){
+      bubble("assistant", `Hola ${userName}, estás en ${activeBot}. ¿En qué te ayudo?`);
+    }
+    greet();
+
     (async function startConversation(){
       const thinking = addThinking();
       try{
@@ -491,11 +575,7 @@ html2 = r"""<!DOCTYPE html>
         fileIn.value = "";
       }
     });
+
   </script>
 </body>
 </html>
-"""
-out2 = "/mnt/data/iaaratrev8_mod2.html"
-with open(out2, "w", encoding="utf-8") as f:
-    f.write(html2)
-out2
