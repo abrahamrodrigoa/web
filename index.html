@@ -1,0 +1,1280 @@
+html = r"""<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <title>Multi Agente IA-ARAT</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+      /* ===== ESTILOS PARA RENDERIZAR MARKDOWN ===== */
+
+      .bubble .markdown {
+        overflow-x: auto;
+        font-size: 15px;
+        line-height: 1.5;
+      }
+
+      /* Tablas */
+      .bubble .markdown table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0;
+        border: 1px solid #e5e7eb;
+      }
+
+      .bubble .markdown th,
+      .bubble .markdown td {
+        border: 1px solid #e5e7eb;
+        padding: 8px 10px;
+        text-align: left;
+        vertical-align: top;
+        word-break: break-word;
+      }
+
+      .bubble .markdown th {
+        background: #f9fafb;
+        font-weight: 700;
+        text-transform: uppercase;
+        font-size: 14px;
+      }
+
+      /* Listas, títulos y texto */
+      .bubble .markdown h1,
+      .bubble .markdown h2,
+      .bubble .markdown h3 {
+        margin: 14px 0 8px;
+        font-weight: 700;
+      }
+
+      .bubble .markdown ul,
+      .bubble .markdown ol {
+        padding-left: 22px;
+      }
+
+      .bubble .markdown p {
+        margin: 6px 0;
+      }
+
+      /* Código */
+      .bubble .markdown pre {
+        background: #1f2937;
+        color: #e5e7eb;
+        padding: 10px;
+        border-radius: 8px;
+        overflow-x: auto;
+      }
+
+      :root {
+        --ink: #1f2937;
+        --ink-dim: #374151;
+        --line: #0000001a;
+        --brand: #facc15;
+        --brand-2: #fde047;
+        --bubble: #ffffff;
+        --bubbleUser: #fff7cc;
+        --chip: #0000000a;
+        --accent: #a16207;
+        --risk: #ef4444;
+        --blue: #3b82f6;
+        --green: #22c55e;
+        --yellow: #facc15;
+        --red: #ef4444;
+        --bg-a: #f2f3f5;
+        --bg-b: #e9ebee;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
+          "Helvetica Neue", Arial;
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        background: radial-gradient(
+            900px 400px at 85% 10%,
+            #ffe68055,
+            transparent 60%
+          ),
+          linear-gradient(135deg, var(--bg-a) 0%, var(--bg-b) 50%, #fff1b3 100%);
+        background-attachment: fixed;
+        position: relative;
+      }
+      /* ===== Fondo fijo detrás para pestaña IA ===== */
+      body.theme-IA::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.25)),
+          url("assets/fondo-IA.jpg");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      body:not(.theme-IA)::before {
+        content: none;
+      }
+
+      .container {
+        max-width: 1104px;
+        margin: 0 auto;
+        padding: 0 16px;
+      }
+
+      /* ===== Header ===== */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        backdrop-filter: saturate(160%) blur(8px);
+        background: rgba(255, 255, 255, 0.6);
+        border-bottom: 1px solid var(--line);
+      }
+      .hdr {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 0;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: inherit;
+      }
+      .brand img {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        border: 1px solid var(--line);
+        object-fit: cover;
+      }
+      .brand span {
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+
+      nav {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .tab {
+        display: inline-block;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 14px;
+        text-decoration: none;
+        color: var(--ink-dim);
+        border: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.7);
+        transition: 0.2s transform, 0.2s box-shadow, 0.2s background, 0.2s color,
+          0.2s border-color;
+        white-space: nowrap;
+      }
+      .tab:hover {
+        color: #111827;
+        border-color: #00000022;
+        background: #ffffff;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 24px #00000014;
+      }
+      .tab.active {
+        background: #fde68a;
+        border-color: #fcd34d;
+        color: #111827;
+        box-shadow: 0 8px 22px #f59e0b22;
+      }
+
+      /* Riesgos: normal por defecto; rojo solo en hover y active */
+      .tab.risk:hover {
+        background: #fff1f2;
+        border-color: #fecaca;
+        color: #7f1d1d;
+        box-shadow: 0 8px 22px #ef444422;
+      }
+      .tab.risk.active {
+        background: #fecaca;
+        border-color: #ef4444;
+        color: #7f1d1d;
+        box-shadow: 0 8px 22px #ef444433;
+      }
+
+      /* Language toggle ES/EN */
+      .lang {
+        position: relative;
+      }
+      .lang-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: #fff;
+        text-decoration: none;
+        color: #111827;
+        cursor: pointer;
+        font-weight: 600;
+      }
+
+      main {
+        flex: 1;
+      }
+      .title {
+        margin: 24px 0 6px;
+        text-align: center;
+        font-size: 28px;
+        font-weight: 800;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: center;
+      }
+      .ia-box {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: #fff;
+        border: 1px solid var(--line);
+        font-weight: 800;
+        letter-spacing: 0.3px;
+        color: #111827;
+        transition: 0.2s transform, 0.2s box-shadow, 0.2s background;
+      }
+      .ia-box:hover {
+        background: #fff7cc;
+        box-shadow: 0 8px 20px #facc1533;
+        transform: translateY(-1px);
+      }
+
+      .subtitle {
+        margin: 0 0 16px;
+        text-align: center;
+        color: #4b5563;
+      }
+      code.inline {
+        background: #0000000d;
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+
+      .panel {
+        height: 70vh;
+        min-height: 460px;
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+      }
+      .log {
+        flex: 1;
+        overflow: auto;
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+      }
+      .row.user {
+        justify-content: flex-end;
+      }
+      .row.assistant {
+        justify-content: flex-start;
+      }
+      .avatar {
+        width: 36px;
+        height: 36px;
+        flex: 0 0 36px;
+        position: relative;
+      }
+      .avatar img {
+        position: absolute;
+        inset: 0;
+        width: 36px;
+        height: 36px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        object-fit: cover;
+      }
+
+      .bubble {
+        max-width: 90%;
+        background: var(--bubble);
+        color: #111827;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 10px 12px;
+        line-height: 1.48;
+        white-space: pre-wrap;
+        box-shadow: 0 1px 0 #00000010;
+      }
+      .row.user .bubble {
+        background: var(--bubbleUser);
+        border-color: #fcd34d88;
+      }
+
+      .cap {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        background: var(--chip);
+        color: #111827;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 2px 8px;
+        margin-bottom: 8px;
+      }
+      .cap .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #f59e0b;
+        box-shadow: 0 0 8px #f59e0b77;
+      }
+      .cap .edit {
+        margin-left: 6px;
+        cursor: pointer;
+        opacity: 0.7;
+      }
+      .cap .edit:hover {
+        opacity: 1;
+      }
+
+      .thinking {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fffceb;
+        border: 1px dashed #fcd34d;
+        color: #854d0e;
+        border-radius: 14px;
+        padding: 8px 12px;
+      }
+      .ellipsis {
+        display: inline-flex;
+        gap: 6px;
+        margin-left: 6px;
+      }
+      .ellipsis i {
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: var(--accent);
+        opacity: 0.25;
+        animation: blink 1.4s infinite;
+      }
+      .ellipsis i:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+      .ellipsis i:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+      @keyframes blink {
+        0%,
+        80%,
+        100% {
+          opacity: 0.25;
+          transform: translateY(0);
+        }
+        40% {
+          opacity: 1;
+          transform: translateY(-2px);
+        }
+      }
+
+      .composer {
+        border-top: 1px solid var(--line);
+        background: rgba(255, 255, 255, 0.7);
+        padding: 12px;
+      }
+      .comp-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: #ffffff;
+        padding: 6px 8px;
+        box-shadow: 0 1px 1px rgba(0, 0, 0, 0.03);
+      }
+      .comp-wrap .avatar {
+        width: 40px;
+        height: 40px;
+        flex: 0 0 40px;
+      }
+      .comp-wrap .avatar img {
+        width: 40px;
+        height: 40px;
+      }
+      input[type="text"] {
+        flex: 1;
+        border: 0;
+        outline: none;
+        background: transparent;
+        font-size: 15px;
+        color: #111827;
+      }
+      input::placeholder {
+        color: #9ca3af;
+      }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+      }
+      .icon-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+      }
+      .send {
+        width: 42px;
+        height: 42px;
+        border-radius: 999px;
+        border: 1px solid #eab30880;
+        background: linear-gradient(135deg, var(--brand), var(--brand-2));
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: 0.15s transform, 0.15s filter;
+      }
+      .send:hover {
+        filter: brightness(1.05);
+      }
+      .send:active {
+        transform: scale(0.96);
+      }
+
+      .file-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #fff7cc;
+        border: 1px solid #fcd34d;
+        color: #111827;
+        border-radius: 999px;
+        padding: 6px 10px;
+        font-size: 12px;
+      }
+      .file-pill .name {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .hint {
+        margin-top: 6px;
+        font-size: 12px;
+        color: #4b5563;
+      }
+
+      /* WhatsApp bottom-left (fixed) */
+      .whatsapp-wrap {
+        position: fixed;
+        left: 18px;
+        bottom: 18px;
+        z-index: 60;
+      }
+
+      @media (max-width: 680px) {
+        .title {
+          font-size: 24px;
+        }
+        .panel {
+          height: calc(100dvh - 260px);
+        }
+      }
+
+      /* ===== BOTÓN COPIAR PARA TABLAS ===== */
+      .copy-btn {
+        float: right;
+        font-size: 12px;
+        padding: 4px 8px;
+        background: #facc15;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 6px;
+        transition: background 0.2s;
+      }
+      .copy-btn:hover {
+        background: #eab308;
+      }
+    </style>
+    <!-- Preload imágenes para evitar parpadeo -->
+    <link rel="preload" as="image" href="assets/fondo-IA.jpg" />
+    <link rel="preload" as="image" href="assets/logo-rodri.png" />
+    <link rel="preload" as="image" href="assets/icorobotito.png" />
+  </head>
+  <body>
+    <header>
+      <div class="container hdr">
+        <a class="brand" href="#">
+          <!-- Logo desde /assets -->
+          <img src="assets/logo-rodri.png" alt="Logo Rodrigo" />
+          <span>Multi Agente IA-ARAT</span>
+        </a>
+
+        <nav id="tabs"></nav>
+
+        <div class="lang">
+          <button
+            id="langBtn"
+            class="lang-btn"
+            type="button"
+            title="Cambiar idioma"
+          >
+            ES ⇄ EN
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="container">
+        <h1 id="page-title" class="title">
+          <span class="ia-box" title="IA">IA</span>
+          <span id="page-title-text">Especificaciones Técnicas</span>
+        </h1>
+        <p class="subtitle">
+          Estás en la plataforma única. Canal lógico:
+          <code id="botlink-label" class="inline"
+            >BOTON_Especificaciones_Técnicas</code
+          >
+        </p>
+
+        <section class="panel" aria-label="Chat">
+          <div
+            id="log"
+            class="log"
+            role="log"
+            aria-live="polite"
+            aria-relevant="additions"
+          ></div>
+
+          <form id="composer" class="composer" autocomplete="off">
+            <div class="comp-wrap">
+              <div class="avatar">
+                <img src="assets/icorobotito.png" alt="robotito_ARAT" />
+              </div>
+
+              <button
+                id="fileBtn"
+                type="button"
+                class="btn icon-btn"
+                title="Adjuntar archivo (📎)"
+              >
+                📎
+              </button>
+              <input id="fileInput" type="file" style="display: none" />
+
+              <input id="input" type="text" placeholder="Escribe tu mensaje…" />
+              <button type="submit" class="send" aria-label="Enviar">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M3 11l18-8-8 18-2-7-8-3z"
+                    stroke="#0b1230"
+                    stroke-width="2"
+                    fill="none"
+                  />
+                </svg>
+              </button>
+            </div>
+            <div class="hint">
+              Canal actual:
+              <code id="botlink" class="inline"
+                >BOTON_Especificaciones_Técnicas</code
+              >
+              · Sesión de <strong id="who">…</strong>
+            </div>
+          </form>
+        </section>
+      </div>
+    </main>
+
+    <!-- WhatsApp Link (usa imagen del repo) -->
+    <div class="whatsapp-wrap">
+      <a
+        href="https://wa.me/59178257710?text=Hola,%20te%20saluda%20Rodrigo%20%F0%9F%91%8B.%20%C2%BFEn%20qu%C3%A9%20puedo%20ayudarte%20hoy%3F"
+        target="_blank"
+        style="
+          background: #25d366;
+          color: #fff;
+          padding: 8px 12px;
+          border-radius: 10px;
+          font-weight: 600;
+          text-decoration: none;
+          display: inline-flex;
+          gap: 8px;
+          align-items: center;
+          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        "
+      >
+        <img
+          src="assets/icono-whatsapp.jpg"
+          alt="WhatsApp"
+          style="
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            object-fit: cover;
+          "
+        />
+        Contactar por WhatsApp
+      </a>
+    </div>
+
+    <script>
+      /* ================== CONFIG TABS + WEBHOOK ================== */
+      // Orden: IA primero. Quitamos Ayuda.
+      /* ================== CONFIG TABS + WEBHOOK ================== */
+      // Orden: IA primero. Quitamos Ayuda.
+      /* ================== CONFIG TABS + WEBHOOK ================== */
+      // Orden de pestañas en la interfaz
+      const TABS = [
+        "IA",
+        "Especificaciones Técnicas",
+        "Ensayos de Suelos",
+        "Riesgos",
+        "Contrato",
+        "Contacto",
+      ];
+
+      // Webhooks individuales por canal (cada pestaña usa su propio endpoint)
+      const WEBHOOKS = {
+        "Ensayos de Suelos":
+          "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/1fab9370-3f57-4806-b8d2-3389d5e95fcb/chat",
+        "Especificaciones Técnicas":
+          "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/21ae7a6a-b9b9-4fc8-9c12-ca947cbb9ed5/chat",
+        Riesgos:
+          "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/dd36f8b6-3e22-4b6c-944e-77320cbc9465/chat",
+        Contrato:
+          "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/fe564813-a914-48d1-bf0c-09c0c5198265/chat",
+        IA: "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/8a7a4b73-cd8e-4832-9459-6d3c1cfbe263/chat",
+        DEFAULT:
+          "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/8a7a4b73-cd8e-4832-9459-6d3c1cfbe263/chat", // Fallback
+      };
+
+      // Notas de canal (texto que acompaña cada pestaña para el backend)
+      const CHANNEL_NOTES = {
+        "Especificaciones Técnicas":
+          "Colocar aqui para Especificaciones Técnicas",
+        "Ensayos de Suelos": "Colocar aqui Ensayos de Suelos",
+        Riesgos: "Colocar aqui Riesgos",
+        Contrato: "Colocar aqui Contrato",
+        IA: "Colocar aqui para IA",
+      };
+
+      /* ================== HELPERS ================== */
+      const qs = (s) => document.querySelector(s);
+      function getActiveBot() {
+        const u = new URL(window.location.href);
+        const raw = (u.searchParams.get("bot") || "").toLowerCase();
+        const found = TABS.find((t) => t.toLowerCase() === raw);
+        return found || "Especificaciones Técnicas";
+      }
+      function botToLink(name) {
+        return "BOTON_" + name.replace(/\s+/g, "_");
+      }
+
+      (function renderTabs() {
+        const nav = qs("#tabs");
+        const active = getActiveBot();
+        const current = location.pathname.split("/").pop() || "index.html";
+
+        nav.innerHTML = TABS.map((tab) => {
+          if (tab === "Contacto") {
+            return `<a class="tab${
+              tab === active ? " active" : ""
+            }" href="contacto-rodrigo.html">${tab}</a>`;
+          }
+          const href = `${current}?bot=${encodeURIComponent(tab)}`;
+          const extraClass = tab === "Riesgos" ? " risk" : "";
+          const cls = "tab" + (tab === active ? " active" : "") + extraClass;
+          return `<a class="${cls}" href="${href}">${tab}</a>`;
+        }).join("");
+      })();
+
+      const activeBot = getActiveBot();
+      const link = botToLink(activeBot);
+      qs("#page-title-text").textContent = activeBot;
+      qs("#botlink-label").textContent = link;
+      qs("#botlink").textContent = link;
+
+      /* ================== THEMES BY BOT ================== */
+      function setThemeForBot(name) {
+        const body = document.body;
+        body.classList.remove("theme-IA");
+        body.style.background = "";
+        body.style.backgroundImage = "";
+        body.style.backgroundColor = "";
+        body.style.backgroundAttachment = "fixed";
+
+        if (name === "Especificaciones Técnicas") {
+          body.style.background =
+            "radial-gradient(900px 400px at 85% 10%, #ffe68055, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fff1b3 100%)";
+        } else if (name === "Ensayos de Suelos") {
+          body.style.background =
+            "radial-gradient(900px 400px at 85% 10%, #bbf7d055, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dcfce7 100%)";
+        } else if (name === "Riesgos") {
+          body.style.background =
+            "radial-gradient(900px 400px at 85% 10%, #fecdd355, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #fee2e2 100%)";
+        } else if (name === "Contrato") {
+          body.style.background =
+            "radial-gradient(900px 400px at 85% 10%, #bfdbfe55, transparent 60%), linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #dbeafe 100%)";
+        } else if (name === "IA") {
+          // Activa fondo con imagen detrás
+          body.classList.add("theme-IA");
+        } else {
+          body.style.background =
+            "linear-gradient(135deg, #f2f3f5 0%, #e9ebee 50%, #e9ebee 100%)";
+        }
+      }
+      setThemeForBot(activeBot);
+
+      /* ======= NOMBRES PROTEGIDOS (sin lápiz) ======= */
+      function isProtectedName(name) {
+        return /^(rodrigo|rodri)$/i.test((name || "").trim());
+      }
+
+      /* ================== USER NAME ================== */
+      const NAME_KEY = "arat_user_name";
+      let userName = localStorage.getItem(NAME_KEY) || "";
+      if (!userName) {
+        userName = (prompt("¡Hola! ¿Cómo te llamas?") || "Usuario").trim();
+        localStorage.setItem(NAME_KEY, userName);
+      }
+      const who = qs("#who");
+      who.textContent = userName;
+
+      function setUserName(newName) {
+        userName = (newName || "Usuario").trim();
+        localStorage.setItem(NAME_KEY, userName);
+        who.textContent = userName;
+
+        document.querySelectorAll(".row.user .cap").forEach((cap) => {
+          const showEdit = !isProtectedName(userName);
+          cap.innerHTML = `<span class="dot"></span> ${userName}${
+            showEdit ? ' <span class="edit" title="Editar">✏️</span>' : ""
+          }`;
+          if (showEdit) {
+            cap.querySelector(".edit")?.addEventListener("click", () => {
+              const nv = prompt("Actualizar nombre:", userName || "");
+              if (nv) setUserName(nv);
+            });
+          }
+        });
+      }
+
+      /* ================== LANGUAGE TOGGLE (abre traductor navegador) ================== */
+      const LANG_KEY = "arat_lang";
+      let lang = localStorage.getItem(LANG_KEY) || "ES";
+      const langBtn = qs("#langBtn");
+      langBtn.textContent = "ES ⇄ EN";
+
+      langBtn.addEventListener("click", () => {
+        lang = lang === "ES" ? "EN" : "ES";
+        localStorage.setItem(LANG_KEY, lang);
+        // Abre el traductor del navegador (Google Translate) en nueva pestaña para esta URL
+        const tl = lang === "EN" ? "en" : "es";
+        const url = `https://translate.google.com/translate?sl=auto&tl=${tl}&u=${encodeURIComponent(
+          location.href
+        )}`;
+        window.open(url, "_blank");
+      });
+
+      /* ================== CHAT UI ================== */
+      const log = qs("#log");
+
+      function bubble(role, text) {
+        const row = document.createElement("div");
+        row.className = `row ${role}`;
+        if (role === "assistant") {
+          const av = document.createElement("div");
+          av.className = "avatar";
+          av.innerHTML = `<img src="assets/icorobotito.png" alt="robotito_ARAT"/>`;
+          row.appendChild(av);
+        } else {
+          const spacer = document.createElement("div");
+          spacer.style.width = "36px";
+          row.appendChild(spacer);
+        }
+
+        const b = document.createElement("div");
+        b.className = "bubble";
+        const cap = document.createElement("div");
+        cap.className = "cap";
+        const showEdit = role === "user" && !isProtectedName(userName);
+        const capHtml =
+          role === "user"
+            ? `<span class="dot"></span> ${userName}${
+                showEdit ? ' <span class="edit" title="Editar">✏️</span>' : ""
+              }`
+            : `<span class="dot"></span> robotito_ARAT`;
+        cap.innerHTML = capHtml;
+        b.appendChild(cap);
+
+        const body = document.createElement("div");
+
+        // Si el mensaje viene del asistente, renderiza como Markdown
+        if (role === "assistant" && window.marked) {
+          body.className = "markdown";
+
+          // Limpia los <br> dentro de tablas para evitar errores de formato
+          let cleanText = String(text || "").replace(/\| *<br> */g, " | ");
+
+          // Convierte Markdown a HTML
+          try {
+            body.innerHTML = marked.parse(cleanText);
+          } catch {
+            body.textContent = text;
+          }
+        } else {
+          // Si es del usuario, muestra texto normal
+          body.textContent = text;
+        }
+
+        b.appendChild(body);
+
+        row.appendChild(b);
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+
+        if (role === "assistant") {
+          setTimeout(addCopyButtons, 100); // agrega el botón a las tablas nuevas
+        }
+
+        if (role === "user" && showEdit) {
+          cap.querySelector(".edit")?.addEventListener("click", () => {
+            const nv = prompt("Actualizar nombre:", userName || "");
+            if (nv) setUserName(nv);
+          });
+        }
+        return row;
+      }
+
+      function addThinking() {
+        const row = document.createElement("div");
+        row.className = "row assistant";
+        const av = document.createElement("div");
+        av.className = "avatar";
+        av.innerHTML = `<img src="assets/icorobotito.png" alt="robotito_ARAT"/>`;
+        row.appendChild(av);
+        const box = document.createElement("div");
+        box.className = "thinking";
+        box.innerHTML = `<strong>robotito_ARAT está pensando</strong>
+        <span class="ellipsis"><i></i><i></i><i></i></span>`;
+        row.appendChild(box);
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+        return row;
+      }
+
+      function bubbleFile(file) {
+        const row = document.createElement("div");
+        row.className = "row user";
+        const spacer = document.createElement("div");
+        spacer.style.width = "36px";
+        row.appendChild(spacer);
+
+        const b = document.createElement("div");
+        b.className = "bubble";
+        const cap = document.createElement("div");
+        cap.className = "cap";
+        const showEdit = !isProtectedName(userName);
+        cap.innerHTML = `<span class="dot"></span> ${userName}${
+          showEdit ? ' <span class="edit" title="Editar">✏️</span>' : ""
+        }`;
+        b.appendChild(cap);
+
+        const pill = document.createElement("div");
+        pill.className = "file-pill";
+        pill.innerHTML = `📄 <span class="name">${
+          file.name
+        }</span> <span class="muted">(${Math.round(
+          file.size / 1024
+        )} kB)</span>`;
+        b.appendChild(pill);
+
+        row.appendChild(b);
+        log.appendChild(row);
+        log.scrollTop = log.scrollHeight;
+
+        if (showEdit) {
+          cap.querySelector(".edit")?.addEventListener("click", () => {
+            const nv = prompt("Actualizar nombre:", userName || "");
+            if (nv) setUserName(nv);
+          });
+        }
+        return row;
+      }
+
+      /* ================== SESSION + AGENT ================== */
+      const SESSION_KEY = "arat_session_id";
+      const sessionId =
+        localStorage.getItem(SESSION_KEY) || crypto.randomUUID();
+      localStorage.setItem(SESSION_KEY, sessionId);
+      const AGENT_URL = WEBHOOKS[activeBot] || WEBHOOKS.DEFAULT;
+      const NOTE = CHANNEL_NOTES[activeBot] || "";
+
+      async function sendToAgent({ text, attachments }) {
+        const payload = {
+          action: "sendMessage",
+          sessionId,
+          chatInput: text || "",
+          attachments: attachments || [],
+          channel: botToLink(activeBot),
+          note: NOTE,
+        };
+        const res = await fetch(AGENT_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const ct = res.headers.get("content-type") || "";
+        let body = ct.includes("application/json")
+          ? await res.json()
+          : await res.text();
+        if (!res.ok) {
+          const err = typeof body === "string" ? body : JSON.stringify(body);
+          throw new Error(err || `HTTP ${res.status}`);
+        }
+        if (typeof body === "string") {
+          const s = body.trim();
+          if (s.startsWith("{") || s.startsWith("[")) {
+            try {
+              body = JSON.parse(s);
+            } catch {}
+          }
+        }
+        if (typeof body?.output === "string") return body.output;
+        if (Array.isArray(body?.messages) && body.messages.length) {
+          const first =
+            body.messages.find((m) => typeof m?.text === "string") ||
+            body.messages[0];
+          if (typeof first?.text === "string") return first.text;
+        }
+        if (typeof body?.message === "string") return body.message;
+        if (typeof body?.text === "string") return body.text;
+        if (typeof body?.answer === "string") return body.answer;
+        const gem = body?.response?.generations?.[0]?.text;
+        if (typeof gem === "string") return gem;
+        return typeof body === "string" ? body : JSON.stringify(body);
+      }
+
+      // ========= Frase científica dinámica (IA en construcción) =========
+
+      // Fallback local (por si falla la API). Puedes editar/añadir más.
+      const LOCAL_QUOTES = [
+        {
+          text: "AI enables proactive quality control and risk mitigation across the construction project lifecycle.",
+          author:
+            "Zhou et al., Journal of Construction Engineering and Management, 2022",
+          url: "https://ascelibrary.org/journal/jcemd4",
+        },
+        {
+          text: "Machine learning improves cost forecasting and schedule reliability in complex infrastructure projects.",
+          author: "Pan & Zhang, Automation in Construction, 2021",
+          url: "https://www.sciencedirect.com/journal/automation-in-construction",
+        },
+        {
+          text: "Computer vision and AI can automate on-site safety monitoring and compliance verification.",
+          author: "Fang et al., Safety Science, 2020",
+          url: "https://www.sciencedirect.com/journal/safety-science",
+        },
+        {
+          text: "Data-driven decision support enhances constructability reviews and change-order management.",
+          author: "Love et al., Construction Innovation, 2023",
+          url: "https://www.emerald.com/insight/publication/issn/1471-4175",
+        },
+      ];
+
+      // Guarda/recupera una cita por sesión para no repetir durante la misma sesión
+      const INTRO_QUOTE_KEY = "arat_intro_quote_v1";
+
+      function saveIntroQuoteToSession(q) {
+        sessionStorage.setItem(INTRO_QUOTE_KEY, JSON.stringify(q));
+      }
+      function getIntroQuoteFromSession() {
+        try {
+          return JSON.parse(sessionStorage.getItem(INTRO_QUOTE_KEY) || "null");
+        } catch {
+          return null;
+        }
+      }
+
+      // Llama a Crossref para buscar artículos sobre "artificial intelligence construction"
+      async function fetchRandomCrossrefQuote() {
+        // Busca hasta 50 trabajos; filtra los que tengan DOI
+        const url =
+          "https://api.crossref.org/works?rows=50&query=artificial%20intelligence%20construction";
+        const res = await fetch(url, {
+          headers: { Accept: "application/json" },
+        });
+        if (!res.ok) throw new Error("Crossref error " + res.status);
+        const data = await res.json();
+
+        const items = (data?.message?.items || []).filter(
+          (it) => it.DOI && it.title && it.title.length
+        );
+        if (!items.length) throw new Error("Sin resultados útiles en Crossref");
+
+        // Elige uno al azar
+        const pick = items[Math.floor(Math.random() * items.length)];
+        const title = pick.title && pick.title[0] ? pick.title[0] : "Article";
+        const year =
+          pick["published-print"]?.["date-parts"]?.[0]?.[0] ||
+          pick["published-online"]?.["date-parts"]?.[0]?.[0] ||
+          pick.created?.["date-parts"]?.[0]?.[0] ||
+          "s.f.";
+        const firstAuthor =
+          pick.author && pick.author.length
+            ? `${
+                pick.author[0]?.family || pick.author[0]?.given || "Autor"
+              } et al.`
+            : "Autor desconocido";
+        const doiUrl = `https://doi.org/${pick.DOI}`;
+
+        return {
+          text: title,
+          author: `${firstAuthor}, ${
+            pick["container-title"]?.[0] || "Journal"
+          }, ${year}`,
+          url: doiUrl,
+        };
+      }
+
+      // Devuelve una cita (usa sesión > Crossref > fallback local)
+      async function getIntroQuote() {
+        const inSession = getIntroQuoteFromSession();
+        if (inSession) return inSession;
+
+        try {
+          const live = await fetchRandomCrossrefQuote();
+          saveIntroQuoteToSession(live);
+          return live;
+        } catch {
+          const fallback =
+            LOCAL_QUOTES[Math.floor(Math.random() * LOCAL_QUOTES.length)];
+          saveIntroQuoteToSession(fallback);
+          return fallback;
+        }
+      }
+
+      // Inserta la burbuja de saludo + frase científica al iniciar
+      async function showIntroBubbleIfFirstTime() {
+        // Evita duplicar si ya hay quote en la sesión y ya mostraste saludo arriba
+        const q = await getIntroQuote();
+        const md = `> "${q.text}" — *${q.author}*  
+🔗 ${q.url}`;
+        bubble(
+          "assistant",
+          `¡Hola ${userName}! 👷‍♂️ Estoy listo para ayudarte a analizar tus Especificaciones Técnicas con IA.\n\n${md}\n\n` +
+            "📊 **¿Qué parte de las Especificaciones Técnicas deseas analizar?**\n\n" +
+            "1️⃣ Descripción / Definición\n" +
+            "2️⃣ Materiales, Herramientas y Equipos\n" +
+            "3️⃣ Procedimiento de Ejecución\n" +
+            "4️⃣ Medición\n" +
+            "5️⃣ Forma de Pago\n" +
+            "6️⃣ Identificación de Ensayos\n" +
+            "7️⃣ Gestión de Calidad\n" +
+            "8️⃣ Lista de Ítems\n\n" +
+            "¿En qué puedo ayudarte hoy?\n" +
+            "Por favor, indícame:\n" +
+            "- La **opción** (1 al 8), y\n" +
+            "- El **número y nombre del ítem** que quieres revisar;\n" +
+            "o si prefieres, solicita la **Lista de Ítems**."
+        );
+      }
+
+      /* ================== STARTUP ================== */
+      (async function startConversation() {
+        // 1) Muestra saludo + frase científica aleatoria + menú
+        await showIntroBubbleIfFirstTime();
+
+        // 2) (Opcional) además, avisa al agente quién es el usuario
+        try {
+          await sendToAgent({
+            text: `Contexto: el usuario se llama ${userName} y está en ${activeBot}.`,
+          });
+        } catch (e) {
+          bubble("assistant", `Inicio: ${e.message || e}`);
+        }
+      })();
+
+      /* ================== COMPOSER: TEXTO ================== */
+      qs("#composer").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = qs("#input");
+        const text = (input.value || "").trim();
+        if (!text) return;
+
+        bubble("user", text);
+        detectNameInText(text);
+        input.value = "";
+
+        const thinking = addThinking();
+        try {
+          const reply = await sendToAgent({ text });
+          thinking.remove();
+          bubble("assistant", reply);
+        } catch (err) {
+          thinking.remove();
+          bubble("assistant", String(err));
+        }
+      });
+
+      /* Detecta nombre en mensajes */
+      function detectNameInText(text) {
+        const t = text.toLowerCase().trim();
+        const rx = /(me llamo|mi nombre es|soy)\s+([a-zA-ZÀ-ÿ'\- ]{2,})$/i;
+        const m = t.match(rx);
+        if (m && m[2]) {
+          const name = m[2].replace(/[.,;:!?]+$/, "").trim();
+          if (name) setUserName(name);
+        }
+      }
+
+      /* ================== COMPOSER: ARCHIVOS ================== */
+      const fileBtn = qs("#fileBtn");
+      const fileIn = qs("#fileInput");
+      fileBtn.addEventListener("click", () => fileIn.click());
+
+      fileIn.addEventListener("change", async () => {
+        const f = fileIn.files?.[0];
+        if (!f) return;
+        bubbleFile(f);
+
+        const dataBase64 = await new Promise((res, rej) => {
+          const r = new FileReader();
+          r.onload = () => res(String(r.result).split(",")[1] || "");
+          r.onerror = rej;
+          r.readAsDataURL(f);
+        });
+
+        const thinking = addThinking();
+        try {
+          const reply = await sendToAgent({
+            text: `(El usuario adjuntó un archivo: ${f.name}, ${
+              f.type || "sin MIME"
+            }, ${f.size} bytes).`,
+            attachments: [
+              {
+                name: f.name,
+                type: f.type || "application/octet-stream",
+                size: f.size,
+                dataBase64,
+              },
+            ],
+          });
+          thinking.remove();
+          bubble("assistant", reply);
+        } catch (e) {
+          thinking.remove();
+          bubble(
+            "assistant",
+            `No se pudo enviar el archivo: ${e.message || e}`
+          );
+        } finally {
+          fileIn.value = "";
+        }
+      });
+    </script>
+
+    <!-- 1) Carga la librería marked desde un CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <!-- 2) (Opcional) Configura marked para que respete saltos de línea -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+      if (window.marked) {
+        marked.setOptions({
+          gfm: true, // Soporte para tablas estilo GitHub
+          breaks: true, // Respetar saltos de línea como <br>
+        });
+      }
+
+      // === FUNCIÓN: Agregar botón "📋 Copiar" a todas las tablas Markdown ===
+      // === Añadir botón de copiar a cada tabla Markdown renderizada (versión Excel-safe) ===
+      function addCopyButtons() {
+        document
+          .querySelectorAll(".bubble .markdown table")
+          .forEach((table) => {
+            if (table.parentElement.querySelector(".copy-btn")) return;
+
+            const btn = document.createElement("button");
+            btn.textContent = "📋 Copiar";
+            btn.className = "copy-btn";
+
+            // --- Utilidades de saneo ---
+            const DANGEROUS_RE = /^[=+\-@]/; // evita fórmulas en Excel
+            const ZWSP = "\u200B"; // zero-width space (invisible)
+            function sanitizeCell(txt) {
+              let s = (txt || "").trim();
+
+              // Cambia bullets HTML por viñeta y normaliza <br> a saltos internos
+              s = s.replace(/\u2022/g, "•").replace(/\r?\n/g, "\r\n");
+
+              // Si empieza como fórmula, neutraliza (sin mostrar ’)
+              if (DANGEROUS_RE.test(s)) s = ZWSP + s;
+
+              // Dobla comillas para CSV/TSV y luego encierra entre comillas
+              s = s.replace(/"/g, '""');
+
+              return `"${s}"`; // Excel respeta \r\n dentro de comillas como salto en UNA celda
+            }
+
+            btn.addEventListener("click", () => {
+              let out = "";
+              table.querySelectorAll("tr").forEach((row, ri) => {
+                const cells = [...row.querySelectorAll("th, td")].map((td) => {
+                  // Usa innerText para obtener texto plano ya renderizado
+                  return sanitizeCell(td.innerText);
+                });
+                out += cells.join("\t") + "\r\n"; // TSV con CRLF para Excel
+              });
+
+              navigator.clipboard.writeText(out).then(() => {
+                btn.textContent = "✅ Copiado";
+                setTimeout(() => (btn.textContent = "📋 Copiar"), 1800);
+              });
+            });
+
+            table.parentNode.insertBefore(btn, table);
+          });
+      }
+    </script>
+  </body>
+</html>
