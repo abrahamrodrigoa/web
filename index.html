@@ -37,23 +37,6 @@
             </div>
         </div>
 
-        <!-- Alerta de configuración -->
-        <div id="configAlert" class="bg-yellow-50 border-l-4 border-yellow-400 p-4 mb-6 rounded">
-            <div class="flex">
-                <div class="flex-shrink-0">
-                    <svg class="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <div class="ml-3">
-                    <p class="text-sm text-yellow-700">
-                        <strong>Configuración pendiente:</strong> El webhook de n8n no está configurado. 
-                        <button onclick="showWebhookInstructions()" class="underline font-semibold">Ver instrucciones</button>
-                    </p>
-                </div>
-            </div>
-        </div>
-
         <form id="inspectionForm" class="space-y-6">
             <!-- 1. INFORMACIÓN GENERAL -->
             <div class="section-card bg-white rounded-lg shadow-lg p-6">
@@ -63,31 +46,27 @@
                 </h2>
                 <div class="grid md:grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proyecto *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Proyecto</label>
                         <input type="text" name="proyecto" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Nombre del proyecto">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Contrato No. *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Contrato No.</label>
                         <input type="text" name="contrato" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="CT-2024-XXX">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Ubicación</label>
                         <input type="text" name="ubicacion" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Dirección de la obra">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Fecha</label>
                         <input type="date" name="fecha" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Inspector Responsable *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Inspector Responsable</label>
                         <input type="text" name="inspector" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Ing. Nombre Apellido">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Email del Inspector *</label>
-                        <input type="email" name="inspector_email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="inspector@empresa.com">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Turno *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Turno</label>
                         <select name="turno" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Seleccionar...</option>
                             <option value="Matutino (07:00-15:00)">Matutino (07:00-15:00)</option>
@@ -106,11 +85,11 @@
                 </h2>
                 <div class="grid md:grid-cols-3 gap-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Temperatura (°C) *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Temperatura (°C)</label>
                         <input type="text" name="temperatura" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="18 - 24">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Condición *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Condición</label>
                         <select name="clima" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="">Seleccionar...</option>
                             <option value="Despejado">☀️ Despejado</option>
@@ -120,7 +99,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Trabajable *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Trabajable</label>
                         <select name="trabajable" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                             <option value="SÍ">✅ SÍ</option>
                             <option value="NO">❌ NO</option>
@@ -138,15 +117,15 @@
                 </h2>
                 <div class="grid md:grid-cols-3 gap-4 mb-4">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Planificado *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Planificado</label>
                         <input type="number" name="personal_planificado" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Presente *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Presente</label>
                         <input type="number" name="personal_presente" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Ausente *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Personal Ausente</label>
                         <input type="number" name="personal_ausente" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                     </div>
                 </div>
@@ -170,103 +149,47 @@
                     <span class="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">5</span>
                     Incidentes y No Conformidades
                 </h2>
-                <div id="incidentContainer" class="space-y-4">
-                    <p class="text-gray-500 text-sm">Sin incidentes reportados (opcional)</p>
-                </div>
+                <div id="incidentContainer" class="space-y-4"></div>
                 <button type="button" onclick="addIncident()" class="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition">
                     + Reportar Incidente
                 </button>
             </div>
 
-            <!-- BOTONES DE ENVÍO -->
-            <div class="space-y-4">
-                <!-- Modo Prueba -->
-                <div class="bg-gradient-to-r from-purple-600 to-pink-600 rounded-lg shadow-xl p-6 text-center">
-                    <button type="button" onclick="testMode()" class="bg-white text-purple-600 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-lg text-lg w-full">
-                        🧪 MODO PRUEBA - Ver Datos (Sin enviar)
-                    </button>
-                    <p class="text-white text-sm mt-3">Revisa los datos antes de conectar con n8n</p>
+            <!-- 6. REGISTRO FOTOGRÁFICO -->
+            <div class="section-card bg-white rounded-lg shadow-lg p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                    <span class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm">6</span>
+                    Registro Fotográfico
+                </h2>
+                <div class="mb-4">
+                    <label class="block text-sm font-semibold text-gray-700 mb-2">Subir Fotos (máx 4)</label>
+                    <input type="file" name="fotos" multiple accept="image/*" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" onchange="previewPhotos(event)">
                 </div>
+                <div id="photoPreview" class="grid grid-cols-2 md:grid-cols-4 gap-4"></div>
+            </div>
 
-                <!-- Modo Real -->
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-xl p-6 text-center">
-                    <button type="submit" class="bg-white text-blue-600 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-lg text-lg w-full">
-                        🚀 Generar Reporte Automático con IA
-                    </button>
-                    <p class="text-white text-sm mt-3">El sistema generará el PDF y lo enviará automáticamente</p>
-                </div>
+            <!-- BOTÓN DE ENVÍO -->
+            <div class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-xl p-6 text-center">
+                <button type="submit" class="bg-white text-blue-600 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-lg text-lg">
+                    🚀 Generar Reporte Automático con IA
+                </button>
+                <p class="text-white text-sm mt-3">El sistema generará el PDF y lo enviará automáticamente</p>
             </div>
         </form>
 
         <!-- Loading Modal -->
         <div id="loadingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg p-8 text-center max-w-md">
+            <div class="bg-white rounded-lg p-8 text-center">
                 <div class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"></div>
                 <p class="text-xl font-bold text-gray-800">Generando reporte...</p>
                 <p class="text-gray-600">La IA está procesando la información</p>
             </div>
         </div>
-
-        <!-- Test Modal -->
-        <div id="testModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-lg p-6 max-w-4xl max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-2xl font-bold text-gray-800">📋 Datos a Enviar (Preview)</h3>
-                    <button onclick="closeTestModal()" class="text-gray-500 hover:text-gray-700">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <pre id="testData" class="bg-gray-100 p-4 rounded text-sm overflow-x-auto"></pre>
-                <div class="mt-4 flex gap-2">
-                    <button onclick="copyTestData()" class="flex-1 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                        📋 Copiar JSON
-                    </button>
-                    <button onclick="closeTestModal()" class="flex-1 bg-gray-300 text-gray-700 px-4 py-2 rounded hover:bg-gray-400">
-                        Cerrar
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Instructions Modal -->
-        <div id="instructionsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-            <div class="bg-white rounded-lg p-6 max-w-2xl max-h-[90vh] overflow-y-auto">
-                <h3 class="text-2xl font-bold text-gray-800 mb-4">🔧 Configurar Webhook de n8n</h3>
-                <div class="space-y-4 text-sm">
-                    <div class="bg-blue-50 p-4 rounded">
-                        <p class="font-bold mb-2">PASO 1: Crear Webhook en n8n</p>
-                        <ol class="list-decimal list-inside space-y-1 text-gray-700">
-                            <li>Abre tu n8n</li>
-                            <li>Crea un nuevo workflow</li>
-                            <li>Agrega un nodo "Webhook"</li>
-                            <li>Configura: Method=POST, Path=inspeccion-diaria</li>
-                            <li>Copia la URL del webhook</li>
-                        </ol>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded">
-                        <p class="font-bold mb-2">PASO 2: Actualizar este formulario</p>
-                        <p class="text-gray-700 mb-2">En el código HTML, busca la línea:</p>
-                        <code class="bg-gray-800 text-green-400 p-2 rounded block">const WEBHOOK_URL = 'https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria';</code>
-                        <p class="text-gray-700 mt-2">Y reemplázala con tu URL:</p>
-                        <code class="bg-gray-800 text-green-400 p-2 rounded block">const WEBHOOK_URL = 'https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria';</code>
-                    </div>
-                    <div class="bg-yellow-50 p-4 rounded">
-                        <p class="font-bold mb-2">⚠️ Mientras tanto...</p>
-                        <p class="text-gray-700">Usa el botón <strong>"MODO PRUEBA"</strong> para ver cómo se estructuran los datos que se enviarán a n8n.</p>
-                    </div>
-                </div>
-                <button onclick="closeInstructionsModal()" class="w-full mt-4 bg-blue-600 text-white px-4 py-3 rounded hover:bg-blue-700">
-                    Entendido
-                </button>
-            </div>
-        </div>
     </div>
 
     <script>
-        // Configuración del webhook de n8n (REEMPLAZAR CON TU URL)
-        const WEBHOOK_URL = 'https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria';  // Deja vacío para modo prueba
+        // Configuración del webhook de n8n
+        const WEBHOOK_URL = 'https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria';
 
         let activityCount = 0;
         let incidentCount = 0;
@@ -284,23 +207,23 @@
                 </div>
                 <div class="grid md:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Zona *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Zona</label>
                         <input type="text" name="actividad_zona[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Ej: Nivel 4 - Estructura">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Actividad *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Actividad</label>
                         <input type="text" name="actividad_nombre[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Ej: Vaciado de losa">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Avance Real *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Avance Real</label>
                         <input type="number" name="actividad_avance[]" required min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Programado *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Programado</label>
                         <input type="number" name="actividad_programado[]" required min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Observaciones *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Observaciones</label>
                         <textarea name="actividad_obs[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
                     </div>
                 </div>
@@ -310,9 +233,6 @@
 
         // Agregar incidente
         function addIncident() {
-            if (incidentCount === 0) {
-                document.getElementById('incidentContainer').innerHTML = '';
-            }
             incidentCount++;
             const container = document.getElementById('incidentContainer');
             const incidentDiv = document.createElement('div');
@@ -320,11 +240,11 @@
             incidentDiv.innerHTML = `
                 <div class="flex justify-between items-center mb-3">
                     <h3 class="font-bold text-gray-800">Incidente #${incidentCount}</h3>
-                    <button type="button" onclick="removeIncident(this)" class="text-red-600 hover:text-red-800">❌</button>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-600 hover:text-red-800">❌</button>
                 </div>
                 <div class="grid md:grid-cols-2 gap-3">
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo</label>
                         <select name="incidente_tipo[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                             <option value="">Seleccionar...</option>
                             <option value="Seguridad">Seguridad</option>
@@ -334,7 +254,7 @@
                         </select>
                     </div>
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Severidad *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Severidad</label>
                         <select name="incidente_severidad[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
                             <option value="">Seleccionar...</option>
                             <option value="baja">🟢 Baja</option>
@@ -343,11 +263,11 @@
                         </select>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
                         <textarea name="incidente_desc[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Acción Tomada *</label>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Acción Tomada</label>
                         <textarea name="incidente_accion[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
                     </div>
                 </div>
@@ -355,42 +275,39 @@
             container.appendChild(incidentDiv);
         }
 
-        function removeIncident(button) {
-            button.parentElement.parentElement.remove();
-            incidentCount--;
-            if (incidentCount === 0) {
-                document.getElementById('incidentContainer').innerHTML = '<p class="text-gray-500 text-sm">Sin incidentes reportados (opcional)</p>';
-            }
+        // Preview de fotos
+        function previewPhotos(event) {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            const files = Array.from(event.target.files).slice(0, 4);
+            
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const div = document.createElement('div');
+                    div.className = 'relative';
+                    div.innerHTML = `
+                        <img src="${e.target.result}" class="photo-preview rounded-lg border-2 border-gray-300">
+                        <div class="text-xs text-gray-600 mt-1 truncate">${file.name}</div>
+                    `;
+                    preview.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            });
         }
 
-        function showWebhookInstructions() {
-            document.getElementById('instructionsModal').classList.remove('hidden');
-        }
-
-        function closeInstructionsModal() {
-            document.getElementById('instructionsModal').classList.add('hidden');
-        }
-
-        function closeTestModal() {
-            document.getElementById('testModal').classList.add('hidden');
-        }
-
-        function copyTestData() {
-            const data = document.getElementById('testData').textContent;
-            navigator.clipboard.writeText(data);
-            alert('✅ JSON copiado al portapapeles');
-        }
-
-        function testMode() {
-            const formData = collectFormData();
-            document.getElementById('testData').textContent = JSON.stringify(formData, null, 2);
-            document.getElementById('testModal').classList.remove('hidden');
-        }
-
-        function collectFormData() {
-            const formData = new FormData(document.getElementById('inspectionForm'));
+        // Enviar formulario
+        document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Mostrar loading
+            document.getElementById('loadingModal').classList.remove('hidden');
+            
+            // Preparar datos
+            const formData = new FormData(e.target);
             const data = {};
             
+            // Convertir FormData a objeto
             for (let [key, value] of formData.entries()) {
                 if (key.includes('[]')) {
                     const cleanKey = key.replace('[]', '');
@@ -401,25 +318,11 @@
                 }
             }
             
+            // Agregar timestamp
             data.timestamp = new Date().toISOString();
-            return data;
-        }
-
-        // Enviar formulario
-        document.getElementById('inspectionForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            
-            if (!WEBHOOK_URL || WEBHOOK_URL === 'https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria') {
-                alert('⚠️ El webhook de n8n no está configurado. Usa el botón "MODO PRUEBA" para ver los datos o configura el webhook primero.');
-                showWebhookInstructions();
-                return;
-            }
-            
-            document.getElementById('loadingModal').classList.remove('hidden');
-            
-            const data = collectFormData();
             
             try {
+                // Enviar a n8n
                 const response = await fetch(WEBHOOK_URL, {
                     method: 'POST',
                     headers: {
@@ -429,19 +332,18 @@
                 });
                 
                 if (response.ok) {
-                    const result = await response.json();
-                    alert('✅ ¡Reporte generado exitosamente! Recibirás el PDF por correo en breve.\n\nID: ' + (result.reporte_id || 'Generando...'));
+                    alert('✅ ¡Reporte generado exitosamente! Recibirás el PDF por correo en breve.');
                     e.target.reset();
                     document.getElementById('activityContainer').innerHTML = '';
-                    document.getElementById('incidentContainer').innerHTML = '<p class="text-gray-500 text-sm">Sin incidentes reportados (opcional)</p>';
+                    document.getElementById('incidentContainer').innerHTML = '';
+                    document.getElementById('photoPreview').innerHTML = '';
                     activityCount = 0;
                     incidentCount = 0;
-                    addActivity(); // Agregar una actividad por defecto
                 } else {
                     alert('❌ Error al generar el reporte. Por favor intenta nuevamente.');
                 }
             } catch (error) {
-                alert('❌ Error de conexión. Verifica:\n\n1. Que la URL del webhook esté correcta\n2. Que tu n8n esté activo\n3. Tu conexión a internet');
+                alert('❌ Error de conexión. Verifica tu conexión a internet.');
                 console.error(error);
             } finally {
                 document.getElementById('loadingModal').classList.add('hidden');
@@ -450,11 +352,8 @@
 
         // Agregar una actividad por defecto al cargar
         window.addEventListener('load', () => {
-            const today = new Date().toISOString().split('T')[0];
-            document.querySelector('input[name="fecha"]').value = today;
             addActivity();
         });
     </script>
 </body>
 </html>
-                
