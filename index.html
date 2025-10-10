@@ -3,31 +3,115 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Inspección Diaria de Obra</title>
+    <title>Inspección Diaria de Obra — RDO</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      :root {
+        --bg: #0b0f13;
+        --panel: #121820;
+        --muted: #1a2330;
+        --text: #e6edf3;
+        --sub: #b7c3cf;
+        --brand: #43b581;
+        --brand2: #4aa8ff;
+        --danger: #f25f5c;
+        --warn: #f2a365;
+        --ok: #4fd1c5;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background: linear-gradient(180deg, #0b0f13, #0b0f13 40%, #0f1520);
+        color: var(--text);
+      }
       .section-card {
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
+        background: linear-gradient(180deg, #0e141b, #0b1118);
       }
       .section-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+      }
+      label {
+        color: var(--sub);
+      }
+      input,
+      select,
+      textarea {
+        background: #0a1218;
+        border: 1px solid #223044;
+        color: var(--text);
+        border-radius: 12px;
+        outline: none;
+      }
+      input:focus,
+      select:focus,
+      textarea:focus {
+        border-color: #376da2;
+        box-shadow: 0 0 0 3px rgba(74, 168, 255, 0.15);
       }
       .photo-preview {
         width: 120px;
         height: 120px;
         object-fit: cover;
+        border-radius: 10px;
+        border: 1px solid #233042;
+      }
+      .btn {
+        border-radius: 12px;
+        font-weight: 700;
+      }
+      .btn-primary {
+        background: linear-gradient(180deg, #1c8b64, #116a4d);
+        color: #fff;
+        border: 1px solid #1ea372;
+      }
+      .btn-secondary {
+        background: linear-gradient(180deg, #1a2740, #121a2c);
+        color: #dde6f0;
+        border: 1px solid #2a3c5a;
+      }
+      .btn-ghost {
+        background: transparent;
+        border: 1px dashed #2a3c5a;
+        color: #a9bad0;
+      }
+      .hint {
+        font-size: 0.85rem;
+        color: #9db2c7;
+      }
+      /* Print */
+      @media print {
+        body {
+          background: #fff;
+          color: #000;
+        }
+        .no-print {
+          display: none !important;
+        }
+        input,
+        select,
+        textarea {
+          border: 1px solid #999;
+        }
+        .section-card {
+          box-shadow: none;
+        }
+        video {
+          display: none;
+        }
       }
     </style>
   </head>
-  <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
+  <body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
       <!-- Header -->
-      <div class="bg-white rounded-lg shadow-xl p-6 mb-6">
+      <div class="section-card rounded-xl border border-slate-800 p-6 mb-6">
         <div class="flex items-center gap-4">
-          <div class="bg-blue-600 text-white p-4 rounded-lg">
+          <div class="bg-blue-600/90 p-4 rounded-xl">
             <svg
-              class="w-8 h-8"
+              class="w-8 h-8 text-white"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -41,10 +125,8 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-3xl font-bold text-gray-800">
-              Inspección Diaria de Obra
-            </h1>
-            <p class="text-gray-600">
+            <h1 class="text-3xl font-bold">Inspección Diaria de Obra — RDO</h1>
+            <p class="text-slate-300">
               Complete todos los campos para generar el reporte automático
             </p>
           </div>
@@ -53,10 +135,8 @@
 
       <form id="inspectionForm" class="space-y-6">
         <!-- 1. INFORMACIÓN GENERAL -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
               class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
               >1</span
@@ -65,73 +145,61 @@
           </h2>
           <div class="grid md:grid-cols-2 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Proyecto</label
-              >
+              <label class="block text-sm font-semibold mb-2">Proyecto</label>
               <input
                 type="text"
                 name="proyecto"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
                 placeholder="Nombre del proyecto"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Contrato No.</label
               >
               <input
                 type="text"
                 name="contrato"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
                 placeholder="CT-2024-XXX"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Ubicación</label
-              >
+              <label class="block text-sm font-semibold mb-2">Ubicación</label>
               <input
                 type="text"
                 name="ubicacion"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
                 placeholder="Dirección de la obra"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Fecha</label
-              >
+              <label class="block text-sm font-semibold mb-2">Fecha</label>
               <input
                 type="date"
                 name="fecha"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Inspector Responsable</label
               >
               <input
                 type="text"
                 name="inspector"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
                 placeholder="Ing. Nombre Apellido"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Turno</label
-              >
-              <select
-                name="turno"
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
+              <label class="block text-sm font-semibold mb-2">Turno</label>
+              <select name="turno" required class="w-full px-4 py-2">
                 <option value="">Seleccionar...</option>
                 <option value="Matutino (07:00-15:00)">
                   Matutino (07:00-15:00)
@@ -148,10 +216,8 @@
         </div>
 
         <!-- 2. CONDICIONES CLIMÁTICAS -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
               class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
               >2</span
@@ -160,26 +226,20 @@
           </h2>
           <div class="grid md:grid-cols-3 gap-4">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Temperatura (°C)</label
               >
               <input
                 type="text"
                 name="temperatura"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
                 placeholder="18 - 24"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Condición</label
-              >
-              <select
-                name="clima"
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
+              <label class="block text-sm font-semibold mb-2">Condición</label>
+              <select name="clima" required class="w-full px-4 py-2">
                 <option value="">Seleccionar...</option>
                 <option value="Despejado">☀️ Despejado</option>
                 <option value="Parcialmente nublado">
@@ -190,14 +250,8 @@
               </select>
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
-                >Trabajable</label
-              >
-              <select
-                name="trabajable"
-                required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
+              <label class="block text-sm font-semibold mb-2">Trabajable</label>
+              <select name="trabajable" required class="w-full px-4 py-2">
                 <option value="SÍ">✅ SÍ</option>
                 <option value="NO">❌ NO</option>
                 <option value="PARCIAL">⚠️ PARCIAL</option>
@@ -206,83 +260,147 @@
           </div>
         </div>
 
-        <!-- 3. MANO DE OBRA -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <!-- 3.1 MANO DE OBRA -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
               class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
               >3</span
             >
             Mano de Obra
           </h2>
-          <div class="grid md:grid-cols-3 gap-4 mb-4">
+          <div class="grid md:grid-cols-3 gap-4 mb-2">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Personal Planificado</label
               >
               <input
                 type="number"
                 name="personal_planificado"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Personal Presente</label
               >
               <input
                 type="number"
                 name="personal_presente"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
               />
             </div>
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2"
+              <label class="block text-sm font-semibold mb-2"
                 >Personal Ausente</label
               >
               <input
                 type="number"
                 name="personal_ausente"
                 required
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                class="w-full px-4 py-2"
               />
             </div>
           </div>
         </div>
 
-        <!-- 4. ACTIVIDADES (Dinámico) -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <!-- 3.1 EQUIPOS -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
-              class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
+              class="bg-cyan-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
               >4</span
             >
+            Equipos
+          </h2>
+          <div id="equiposContainer" class="space-y-4"></div>
+          <button
+            type="button"
+            onclick="addEquipo()"
+            class="mt-4 btn btn-secondary px-4 py-2"
+          >
+            + Agregar Equipo
+          </button>
+          <p class="text-sm text-slate-400 mt-2">
+            Registra cada equipo con su operador, horas de uso y estado
+            operacional.
+          </p>
+        </div>
+
+        <!-- 3.2 MATERIALES -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span
+              class="bg-emerald-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
+              >5</span
+            >
+
+            Materiales
+          </h2>
+          <div id="materialesContainer" class="space-y-4"></div>
+          <button
+            type="button"
+            onclick="addMaterial()"
+            class="mt-4 btn btn-secondary px-4 py-2"
+          >
+            + Agregar Material
+          </button>
+          <p class="text-sm text-slate-400 mt-2">
+            Registra ingresos, consumos y salidas; la unidad ayuda al control.
+          </p>
+        </div>
+
+        <!-- 3.3 CONTROL DE CALIDAD -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span
+              class="bg-fuchsia-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
+              >6</span
+            >
+
+            Control de Calidad
+          </h2>
+          <div id="calidadContainer" class="space-y-4"></div>
+          <button
+            type="button"
+            onclick="addCalidad()"
+            class="mt-4 btn btn-secondary px-4 py-2"
+          >
+            + Agregar Control
+          </button>
+          <p class="text-sm text-slate-400 mt-2">
+            Registra ensayos/verificaciones (norma, resultado y conformidad).
+          </p>
+        </div>
+
+        <!-- 4. ACTIVIDADES (Dinámico) -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+            <span
+              class="bg-blue-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
+              >7</span
+            >
+
             Actividades por Zona
           </h2>
           <div id="activityContainer" class="space-y-4"></div>
           <button
             type="button"
             onclick="addActivity()"
-            class="mt-4 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition"
+            class="mt-4 btn btn-primary px-4 py-2"
           >
             + Agregar Actividad
           </button>
         </div>
 
         <!-- 5. INCIDENTES (Dinámico) -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
               class="bg-orange-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
-              >5</span
+              >8</span
             >
             Incidentes y No Conformidades
           </h2>
@@ -290,248 +408,610 @@
           <button
             type="button"
             onclick="addIncident()"
-            class="mt-4 bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition"
+            class="mt-4 btn btn-secondary px-4 py-2"
           >
             + Reportar Incidente
           </button>
         </div>
 
-        <!-- 6. REGISTRO FOTOGRÁFICO -->
-        <div class="section-card bg-white rounded-lg shadow-lg p-6">
-          <h2
-            class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"
-          >
+        <!-- 6. REGISTRO FOTOGRÁFICO (Upload + Cámara, máx 5) -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
             <span
               class="bg-purple-600 text-white w-8 h-8 rounded-full flex items-center justify-center text-sm"
-              >6</span
+              >9</span
             >
             Registro Fotográfico
           </h2>
+
+          <!-- Subir -->
           <div class="mb-4">
-            <label class="block text-sm font-semibold text-gray-700 mb-2"
-              >Subir Fotos (máx 4)</label
+            <label class="block text-sm font-semibold mb-2"
+              >Subir Fotos (máx 5)</label
             >
             <input
               type="file"
-              name="fotos"
-              multiple
+              id="fotosInput"
               accept="image/*"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-              onchange="previewPhotos(event)"
+              multiple
+              class="w-full px-4 py-2"
             />
+            <p class="hint mt-1">
+              Puedes combinar fotos subidas y capturas de cámara. Máximo 5 en
+              total.
+            </p>
           </div>
+
+          <!-- Cámara -->
+          <div class="mb-3 flex flex-wrap gap-3">
+            <button
+              type="button"
+              id="btnStartCam"
+              class="btn btn-secondary px-4 py-2 no-print"
+            >
+              Activar cámara
+            </button>
+            <button
+              type="button"
+              id="btnCapture"
+              class="btn btn-ghost px-4 py-2 no-print"
+              disabled
+            >
+              Tomar foto
+            </button>
+            <button
+              type="button"
+              id="btnStopCam"
+              class="btn btn-ghost px-4 py-2 no-print"
+              disabled
+            >
+              Detener
+            </button>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4 no-print">
+            <video
+              id="video"
+              playsinline
+              autoplay
+              class="w-full rounded-lg border border-slate-700 hidden"
+            ></video>
+            <canvas id="canvas" class="hidden"></canvas>
+          </div>
+
+          <!-- Previsualización -->
           <div
             id="photoPreview"
-            class="grid grid-cols-2 md:grid-cols-4 gap-4"
+            class="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4"
           ></div>
         </div>
 
-        <!-- BOTÓN DE ENVÍO -->
-        <div
-          class="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-lg shadow-xl p-6 text-center"
-        >
-          <button
-            type="submit"
-            class="bg-white text-blue-600 font-bold px-8 py-4 rounded-lg hover:bg-gray-100 transition transform hover:scale-105 shadow-lg text-lg"
-          >
-            🚀 Generar Reporte Automático con IA
-          </button>
-          <p class="text-white text-sm mt-3">
-            El sistema generará el PDF y lo enviará automáticamente
-          </p>
+        <!-- BOTONES DE ACCIÓN -->
+        <div class="section-card rounded-xl border border-slate-800 p-6">
+          <div class="flex flex-col md:flex-row gap-3 md:items-center">
+            <button type="submit" class="btn btn-primary px-6 py-3 text-lg">
+              🚀 Generar Reporte (Webhook)
+            </button>
+            <button
+              type="button"
+              id="btnIA"
+              class="btn btn-secondary px-6 py-3 text-lg"
+            >
+              🤖 Análisis por IA
+            </button>
+            <button
+              type="button"
+              onclick="window.print()"
+              class="btn btn-ghost px-6 py-3 text-lg"
+            >
+              🖨️ Imprimir PDF
+            </button>
+            <p class="text-sm text-slate-300">
+              El sistema generará/analizará el JSON y podrás imprimir el
+              reporte.
+            </p>
+          </div>
         </div>
       </form>
 
       <!-- Loading Modal -->
       <div
         id="loadingModal"
-        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+        class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50"
       >
-        <div class="bg-white rounded-lg p-8 text-center">
+        <div
+          class="bg-white/95 text-slate-900 rounded-xl p-8 text-center max-w-sm shadow-2xl"
+        >
           <div
             class="animate-spin rounded-full h-16 w-16 border-b-4 border-blue-600 mx-auto mb-4"
           ></div>
-          <p class="text-xl font-bold text-gray-800">Generando reporte...</p>
-          <p class="text-gray-600">La IA está procesando la información</p>
+          <p class="text-xl font-bold">Procesando...</p>
+          <p class="text-slate-600">La IA está trabajando con tus datos</p>
         </div>
       </div>
     </div>
 
     <script>
-      // Configuración del webhook de n8n
+      // ========= Configuración de Webhooks =========
       const WEBHOOK_URL =
-        "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook/inspeccion-diaria";
+        "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria";
+      const ANALYSIS_WEBHOOK_URL =
+        "https://uncontracted-pettedly-gannon.ngrok-free.app/webhook-test/inspeccion-diaria-analisis";
 
+      // ========= Estado global para fotos =========
+      const MAX_FOTOS = 5;
+      let capturedImages = []; // base64 desde cámara
+      let uploadedImages = []; // base64 desde input
+      let mediaStream = null;
+
+      // ========= Dinámicos: Actividades / Incidentes =========
       let activityCount = 0;
       let incidentCount = 0;
 
-      // Agregar actividad
       function addActivity() {
         activityCount++;
         const container = document.getElementById("activityContainer");
-        const activityDiv = document.createElement("div");
-        activityDiv.className =
-          "border-2 border-blue-200 rounded-lg p-4 bg-blue-50";
-        activityDiv.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-gray-800">Actividad #${activityCount}</h3>
-                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-600 hover:text-red-800">❌</button>
-                </div>
-                <div class="grid md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Zona</label>
-                        <input type="text" name="actividad_zona[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Ej: Nivel 4 - Estructura">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Actividad</label>
-                        <input type="text" name="actividad_nombre[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" placeholder="Ej: Vaciado de losa">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Avance Real</label>
-                        <input type="number" name="actividad_avance[]" required min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">% Programado</label>
-                        <input type="number" name="actividad_programado[]" required min="0" max="100" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Observaciones</label>
-                        <textarea name="actividad_obs[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
-                    </div>
-                </div>
-            `;
-        container.appendChild(activityDiv);
+        const div = document.createElement("div");
+        div.className =
+          "border border-blue-900/50 rounded-xl p-4 bg-blue-950/20";
+        div.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold">Actividad #${activityCount}</h3>
+      <button type="button" onclick="this.closest('div.border').remove()" class="text-red-400 hover:text-red-300">❌</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Zona</label>
+        <input type="text" name="actividad_zona[]" required class="w-full px-3 py-2" placeholder="Ej: Nivel 4 - Estructura">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Actividad</label>
+        <input type="text" name="actividad_nombre[]" required class="w-full px-3 py-2" placeholder="Ej: Vaciado de losa">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">% Avance Real</label>
+        <input type="number" name="actividad_avance[]" required min="0" max="100" class="w-full px-3 py-2">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">% Programado</label>
+        <input type="number" name="actividad_programado[]" required min="0" max="100" class="w-full px-3 py-2">
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Observaciones</label>
+        <textarea name="actividad_obs[]" required class="w-full px-3 py-2" rows="2"></textarea>
+      </div>
+    </div>
+  `;
+        container.appendChild(div);
       }
 
-      // Agregar incidente
       function addIncident() {
         incidentCount++;
         const container = document.getElementById("incidentContainer");
-        const incidentDiv = document.createElement("div");
-        incidentDiv.className =
-          "border-2 border-orange-200 rounded-lg p-4 bg-orange-50";
-        incidentDiv.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <h3 class="font-bold text-gray-800">Incidente #${incidentCount}</h3>
-                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-red-600 hover:text-red-800">❌</button>
-                </div>
-                <div class="grid md:grid-cols-2 gap-3">
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Tipo</label>
-                        <select name="incidente_tipo[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                            <option value="">Seleccionar...</option>
-                            <option value="Seguridad">Seguridad</option>
-                            <option value="Calidad">Calidad</option>
-                            <option value="Ambiental">Ambiental</option>
-                            <option value="Operacional">Operacional</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Severidad</label>
-                        <select name="incidente_severidad[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg">
-                            <option value="">Seleccionar...</option>
-                            <option value="baja">🟢 Baja</option>
-                            <option value="media">🟡 Media</option>
-                            <option value="alta">🔴 Alta</option>
-                        </select>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Descripción</label>
-                        <textarea name="incidente_desc[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
-                    </div>
-                    <div class="md:col-span-2">
-                        <label class="block text-sm font-semibold text-gray-700 mb-1">Acción Tomada</label>
-                        <textarea name="incidente_accion[]" required class="w-full px-3 py-2 border border-gray-300 rounded-lg" rows="2"></textarea>
-                    </div>
-                </div>
-            `;
-        container.appendChild(incidentDiv);
+        const div = document.createElement("div");
+        div.className =
+          "border border-orange-900/50 rounded-xl p-4 bg-orange-900/20";
+        div.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold">Incidente #${incidentCount}</h3>
+      <button type="button" onclick="this.closest('div.border').remove()" class="text-red-400 hover:text-red-300">❌</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-3">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tipo</label>
+        <select name="incidente_tipo[]" required class="w-full px-3 py-2">
+          <option value="">Seleccionar...</option>
+          <option value="Seguridad">Seguridad</option>
+          <option value="Calidad">Calidad</option>
+          <option value="Ambiental">Ambiental</option>
+          <option value="Operacional">Operacional</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Severidad</label>
+        <select name="incidente_severidad[]" required class="w-full px-3 py-2">
+          <option value="">Seleccionar...</option>
+          <option value="baja">🟢 Baja</option>
+          <option value="media">🟡 Media</option>
+          <option value="alta">🔴 Alta</option>
+        </select>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Descripción</label>
+        <textarea name="incidente_desc[]" required class="w-full px-3 py-2" rows="2"></textarea>
+      </div>
+      <div class="md:col-span-2">
+        <label class="block text-sm font-semibold mb-1">Acción Tomada</label>
+        <textarea name="incidente_accion[]" required class="w-full px-3 py-2" rows="2"></textarea>
+      </div>
+    </div>
+  `;
+        container.appendChild(div);
       }
 
-      // Preview de fotos
-      function previewPhotos(event) {
-        const preview = document.getElementById("photoPreview");
-        preview.innerHTML = "";
-        const files = Array.from(event.target.files).slice(0, 4);
+      // ======== Dinámicos: Equipos / Materiales / Calidad ========
+      let equipoCount = 0;
+      let materialCount = 0;
+      let calidadCount = 0;
 
-        files.forEach((file) => {
+      function addEquipo() {
+        equipoCount++;
+        const cont = document.getElementById("equiposContainer");
+        const div = document.createElement("div");
+        div.className =
+          "border border-cyan-900/50 rounded-xl p-4 bg-cyan-900/15";
+        div.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold">Equipo #${equipoCount}</h3>
+      <button type="button" onclick="this.closest('div.border').remove()" class="text-red-400 hover:text-red-300">❌</button>
+    </div>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Tipo/Equipo</label>
+        <input type="text" name="equipo_tipo[]" required class="w-full px-3 py-2" placeholder="Retroexcavadora, Mixer, Grúa">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Código/Placa</label>
+        <input type="text" name="equipo_codigo[]" required class="w-full px-3 py-2" placeholder="EQ-045 / ABC-123">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Operador</label>
+        <input type="text" name="equipo_operador[]" required class="w-full px-3 py-2" placeholder="Nombre del operador">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Horas Uso (h)</label>
+        <input type="number" min="0" step="0.1" name="equipo_horas[]" required class="w-full px-3 py-2" placeholder="0.0">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Estado</label>
+        <select name="equipo_estado[]" required class="w-full px-3 py-2">
+          <option value="">Seleccionar...</option>
+          <option value="Operativo">Operativo</option>
+          <option value="Mantenimiento">Mantenimiento</option>
+          <option value="Fuera de servicio">Fuera de servicio</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Observaciones</label>
+        <input type="text" name="equipo_obs[]" class="w-full px-3 py-2" placeholder="Opcional">
+      </div>
+    </div>
+  `;
+        cont.appendChild(div);
+      }
+
+      function addMaterial() {
+        materialCount++;
+        const cont = document.getElementById("materialesContainer");
+        const div = document.createElement("div");
+        div.className =
+          "border border-emerald-900/50 rounded-xl p-4 bg-emerald-900/15";
+        div.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold">Material #${materialCount}</h3>
+      <button type="button" onclick="this.closest('div.border').remove()" class="text-red-400 hover:text-red-300">❌</button>
+    </div>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Material</label>
+        <input type="text" name="mat_nombre[]" required class="w-full px-3 py-2" placeholder="Cemento, Acero, Arena">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Unidad</label>
+        <input type="text" name="mat_unidad[]" required class="w-full px-3 py-2" placeholder="kg, m³, und">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Ingreso</label>
+        <input type="number" min="0" step="0.01" name="mat_ingreso[]" required class="w-full px-3 py-2" placeholder="0.00">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Consumo</label>
+        <input type="number" min="0" step="0.01" name="mat_consumo[]" required class="w-full px-3 py-2" placeholder="0.00">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Salida</label>
+        <input type="number" min="0" step="0.01" name="mat_salida[]" required class="w-full px-3 py-2" placeholder="0.00">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Proveedor/Lote</label>
+        <input type="text" name="mat_proveedor[]" class="w-full px-3 py-2" placeholder="Opcional">
+      </div>
+      <div class="md:col-span-3">
+        <label class="block text-sm font-semibold mb-1">Observaciones</label>
+        <textarea name="mat_obs[]" class="w-full px-3 py-2" rows="2" placeholder="Condiciones de almacenamiento, humedad, etc."></textarea>
+      </div>
+    </div>
+  `;
+        cont.appendChild(div);
+      }
+
+      function addCalidad() {
+        calidadCount++;
+        const cont = document.getElementById("calidadContainer");
+        const div = document.createElement("div");
+        div.className =
+          "border border-fuchsia-900/50 rounded-xl p-4 bg-fuchsia-900/15";
+        div.innerHTML = `
+    <div class="flex justify-between items-center mb-3">
+      <h3 class="font-bold">Control #${calidadCount}</h3>
+      <button type="button" onclick="this.closest('div.border').remove()" class="text-red-400 hover:text-red-300">❌</button>
+    </div>
+    <div class="grid md:grid-cols-3 gap-3">
+      <div>
+        <label class="block text-sm font-semibold mb-1">Ítem / Partida</label>
+        <input type="text" name="cal_item[]" required class="w-full px-3 py-2" placeholder="Ej: Concreto f'c 280, Soldadura...">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Norma/Procedimiento</label>
+        <input type="text" name="cal_norma[]" required class="w-full px-3 py-2" placeholder="NTP/ASTM/EN, IT-XX">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Ensayo/Verificación</label>
+        <input type="text" name="cal_ensayo[]" required class="w-full px-3 py-2" placeholder="Asentamiento, Esclerometría, VT/RT...">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Resultado</label>
+        <input type="text" name="cal_resultado[]" required class="w-full px-3 py-2" placeholder="Valor numérico o texto">
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Conforme</label>
+        <select name="cal_conforme[]" required class="w-full px-3 py-2">
+          <option value="">Seleccionar...</option>
+          <option value="SI">SI</option>
+          <option value="NO">NO</option>
+          <option value="CONDICIONAL">CONDICIONAL</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-sm font-semibold mb-1">Observaciones</label>
+        <input type="text" name="cal_obs[]" class="w-full px-3 py-2" placeholder="Acciones, NCR, seguimiento">
+      </div>
+    </div>
+  `;
+        cont.appendChild(div);
+      }
+
+      // ========= Fotos: subir + cámara =========
+      const fotosInput = document.getElementById("fotosInput");
+      const photoPreview = document.getElementById("photoPreview");
+      const video = document.getElementById("video");
+      const canvas = document.getElementById("canvas");
+      const btnStartCam = document.getElementById("btnStartCam");
+      const btnCapture = document.getElementById("btnCapture");
+      const btnStopCam = document.getElementById("btnStopCam");
+
+      async function ensureCamera() {
+        if (mediaStream && !video.classList.contains("hidden")) return true;
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+          video.srcObject = mediaStream;
+          video.classList.remove("hidden");
+          btnCapture.disabled = false;
+          btnStopCam.disabled = false;
+          // pequeña espera para que el video tenga dimensiones
+          await new Promise((r) => setTimeout(r, 200));
+          return true;
+        } catch (err) {
+          alert("No se pudo acceder a la cámara: " + err.message);
+          return false;
+        }
+      }
+
+      function totalFotos() {
+        return uploadedImages.length + capturedImages.length;
+      }
+
+      function renderPreview() {
+        photoPreview.innerHTML = "";
+        const all = [
+          ...uploadedImages.map((b64, idx) => ({
+            b64,
+            src: b64,
+            from: "upload",
+            idx,
+          })),
+          ...capturedImages.map((b64, idx) => ({
+            b64,
+            src: b64,
+            from: "cam",
+            idx,
+          })),
+        ];
+        all.forEach((item) => {
+          const wrap = document.createElement("div");
+          wrap.className = "relative";
+          wrap.innerHTML = `
+      <img src="${item.src}" class="photo-preview"/>
+      <button type="button" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-7 h-7" title="Eliminar">✕</button>
+    `;
+          wrap.querySelector("button").addEventListener("click", () => {
+            if (item.from === "upload") uploadedImages.splice(item.idx, 1);
+            else capturedImages.splice(item.idx, 1);
+            renderPreview();
+          });
+          photoPreview.appendChild(wrap);
+        });
+      }
+
+      async function fileToBase64(file) {
+        return new Promise((res, rej) => {
           const reader = new FileReader();
-          reader.onload = (e) => {
-            const div = document.createElement("div");
-            div.className = "relative";
-            div.innerHTML = `
-                        <img src="${e.target.result}" class="photo-preview rounded-lg border-2 border-gray-300">
-                        <div class="text-xs text-gray-600 mt-1 truncate">${file.name}</div>
-                    `;
-            preview.appendChild(div);
-          };
+          reader.onload = () => res(reader.result);
+          reader.onerror = rej;
           reader.readAsDataURL(file);
         });
       }
 
-      // Enviar formulario
+      fotosInput.addEventListener("change", async (e) => {
+        const files = Array.from(e.target.files);
+        for (const f of files) {
+          if (totalFotos() >= MAX_FOTOS) {
+            alert(`Máximo ${MAX_FOTOS} fotos en total.`);
+            break;
+          }
+          const b64 = await fileToBase64(f);
+          uploadedImages.push(b64);
+        }
+        fotosInput.value = "";
+        renderPreview();
+      });
+
+      btnStartCam.addEventListener("click", async () => {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false,
+          });
+          video.srcObject = mediaStream;
+          video.classList.remove("hidden");
+          btnCapture.disabled = false;
+          btnStopCam.disabled = false;
+        } catch (err) {
+          alert("No se pudo acceder a la cámara: " + err.message);
+        }
+      });
+
+      btnCapture.addEventListener("click", async () => {
+        // Si no está activa, la enciendo y luego capturo
+        const ready = await ensureCamera();
+        if (!ready) return;
+
+        if (totalFotos() >= MAX_FOTOS) {
+          alert(`Máximo ${MAX_FOTOS} fotos en total.`);
+          return;
+        }
+
+        const w = video.videoWidth,
+          h = video.videoHeight;
+        if (!w || !h) return;
+
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/png");
+        capturedImages.push(dataUrl);
+        renderPreview();
+      });
+
+      btnStopCam.addEventListener("click", () => {
+        if (mediaStream) {
+          mediaStream.getTracks().forEach((t) => t.stop());
+          mediaStream = null;
+        }
+        video.classList.add("hidden");
+        btnCapture.disabled = true;
+        btnStopCam.disabled = true;
+      });
+
+      // ========= Utilidades =========
+      function showLoading(show = true) {
+        document
+          .getElementById("loadingModal")
+          .classList.toggle("hidden", !show);
+      }
+
+      function formToJSON(formEl) {
+        const fd = new FormData(formEl);
+        const data = {};
+        for (let [key, value] of fd.entries()) {
+          if (key.includes("[]")) {
+            const k = key.replace("[]", "");
+            if (!data[k]) data[k] = [];
+            data[k].push(value);
+          } else {
+            data[key] = value;
+          }
+        }
+        data.timestamp = new Date().toISOString();
+        data.fotos = [...uploadedImages, ...capturedImages]; // base64
+        return data;
+      }
+
+      async function postJSON(url, payload) {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        return res.ok;
+      }
+
+      function resetAll(formEl) {
+        formEl.reset();
+        document.getElementById("activityContainer").innerHTML = "";
+        document.getElementById("incidentContainer").innerHTML = "";
+        document.getElementById("equiposContainer").innerHTML = "";
+        document.getElementById("materialesContainer").innerHTML = "";
+        document.getElementById("calidadContainer").innerHTML = "";
+        photoPreview.innerHTML = "";
+        activityCount = 0;
+        incidentCount = 0;
+        equipoCount = 0;
+        materialCount = 0;
+        calidadCount = 0;
+        uploadedImages = [];
+        capturedImages = [];
+      }
+
+      // ========= Envíos =========
       document
         .getElementById("inspectionForm")
         .addEventListener("submit", async (e) => {
           e.preventDefault();
-
-          // Mostrar loading
-          document.getElementById("loadingModal").classList.remove("hidden");
-
-          // Preparar datos
-          const formData = new FormData(e.target);
-          const data = {};
-
-          // Convertir FormData a objeto
-          for (let [key, value] of formData.entries()) {
-            if (key.includes("[]")) {
-              const cleanKey = key.replace("[]", "");
-              if (!data[cleanKey]) data[cleanKey] = [];
-              data[cleanKey].push(value);
-            } else {
-              data[key] = value;
-            }
-          }
-
-          // Agregar timestamp
-          data.timestamp = new Date().toISOString();
-
+          showLoading(true);
           try {
-            // Enviar a n8n
-            const response = await fetch(WEBHOOK_URL, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-
-            if (response.ok) {
-              alert(
-                "✅ ¡Reporte generado exitosamente! Recibirás el PDF por correo en breve."
-              );
-              e.target.reset();
-              document.getElementById("activityContainer").innerHTML = "";
-              document.getElementById("incidentContainer").innerHTML = "";
-              document.getElementById("photoPreview").innerHTML = "";
-              activityCount = 0;
-              incidentCount = 0;
+            const payload = formToJSON(e.target);
+            const ok = await postJSON(WEBHOOK_URL, payload);
+            if (ok) {
+              alert("✅ ¡Reporte enviado al webhook correctamente!");
+              resetAll(e.target);
+              // Vuelve a crear una fila por defecto en cada sección
+              addActivity();
+              addEquipo();
+              addMaterial();
+              addCalidad();
             } else {
-              alert(
-                "❌ Error al generar el reporte. Por favor intenta nuevamente."
-              );
+              alert("❌ Error al enviar el reporte al webhook.");
             }
-          } catch (error) {
-            alert("❌ Error de conexión. Verifica tu conexión a internet.");
-            console.error(error);
+          } catch (err) {
+            console.error(err);
+            alert("❌ Error de conexión.");
           } finally {
-            document.getElementById("loadingModal").classList.add("hidden");
+            showLoading(false);
           }
         });
 
-      // Agregar una actividad por defecto al cargar
+      document.getElementById("btnIA").addEventListener("click", async () => {
+        const form = document.getElementById("inspectionForm");
+        showLoading(true);
+        try {
+          const payload = formToJSON(form);
+          payload.modo = "analisis_ia";
+          const ok = await postJSON(ANALYSIS_WEBHOOK_URL, payload);
+          if (ok) {
+            alert(
+              "🤖✅ Análisis por IA enviado. Revisa tu n8n para el resultado."
+            );
+          } else {
+            alert("🤖❌ Hubo un problema enviando al webhook de IA.");
+          }
+        } catch (err) {
+          console.error(err);
+          alert("🤖❌ Error de conexión.");
+        } finally {
+          showLoading(false);
+        }
+      });
+
+      // ========= Estado inicial =========
       window.addEventListener("load", () => {
         addActivity();
+        addEquipo();
+        addMaterial();
+        addCalidad();
       });
     </script>
   </body>
