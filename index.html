@@ -779,9 +779,41 @@
       const btnCapture = document.getElementById("btnCapture");
       const btnStopCam = document.getElementById("btnStopCam");
 
+      function explainGetUserMediaError(err) {
+        const name = err && err.name ? err.name : "";
+        const msg = err && err.message ? err.message : "";
+        if (!isSecureContext) {
+          return "Esta página no está en un contexto seguro. Usa HTTPS o http://localhost.";
+        }
+        switch (name) {
+          case "NotAllowedError":
+          case "SecurityError":
+            return "Permiso denegado. Revisa permisos del navegador (candado en la URL) y del sistema operativo para la cámara.";
+          case "NotFoundError":
+            return "No se encontró cámara. Verifica que haya dispositivo disponible.";
+          case "NotReadableError":
+          case "TrackStartError":
+            return "La cámara está siendo usada por otra aplicación o no puede abrirse. Cierra otras apps que usen la cámara.";
+          case "OverconstrainedError":
+            return "Restricciones no compatibles con el dispositivo. Prueba sin constraints personalizados.";
+          default:
+            return `Error al abrir la cámara: ${
+              name || "Desconocido"
+            } — ${msg}`;
+        }
+      }
+
       async function ensureCamera() {
+        // 1) Secure context
+        if (!isSecureContext) {
+          alert("⚠️ Necesitas HTTPS o http://localhost para usar la cámara.");
+          return false;
+        }
+        // 2) Si ya está activa
         if (mediaStream && !video.classList.contains("hidden")) return true;
+
         try {
+          // No pongas constraints avanzados; deja que el navegador elija
           mediaStream = await navigator.mediaDevices.getUserMedia({
             video: true,
             audio: false,
@@ -790,14 +822,47 @@
           video.classList.remove("hidden");
           btnCapture.disabled = false;
           btnStopCam.disabled = false;
-          // pequeña espera para que el video tenga dimensiones
+
+          // Pequeño delay para que videoWidth/Height estén listos
           await new Promise((r) => setTimeout(r, 200));
           return true;
         } catch (err) {
-          alert("No se pudo acceder a la cámara: " + err.message);
+          alert(explainGetUserMediaError(err));
+          console.error(err);
           return false;
         }
       }
+
+      // Activa cámara con el botón "Activar cámara"
+      btnStartCam.addEventListener("click", async () => {
+        const ok = await ensureCamera();
+        if (!ok) return;
+      });
+
+      // Reemplaza tu listener de "Tomar foto" por este: auto-activa cámara si está apagada
+      btnCapture.addEventListener("click", async () => {
+        if (!(await ensureCamera())) return;
+
+        if (totalFotos() >= MAX_FOTOS) {
+          alert(`Máximo ${MAX_FOTOS} fotos en total.`);
+          return;
+        }
+        const w = video.videoWidth,
+          h = video.videoHeight;
+        if (!w || !h) {
+          alert(
+            "La cámara no está lista aún. Intenta de nuevo en 1-2 segundos."
+          );
+          return;
+        }
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(video, 0, 0, w, h);
+        const dataUrl = canvas.toDataURL("image/png");
+        capturedImages.push(dataUrl);
+        renderPreview();
+      });
 
       function totalFotos() {
         return uploadedImages.length + capturedImages.length;
