@@ -779,6 +779,72 @@
       const btnCapture = document.getElementById("btnCapture");
       const btnStopCam = document.getElementById("btnStopCam");
 
+      // --- ADICIÓN: control y encendido de cámara trasera ---
+      let isCapturing = false; // evita doble disparo
+
+      async function ensureCamera() {
+        // HTTPS o localhost
+        if (!isSecureContext) {
+          alert("⚠️ Necesitas HTTPS o http://localhost para usar la cámara.");
+          return false;
+        }
+        // si ya está activa y visible
+        if (mediaStream && !video.classList.contains("hidden")) return true;
+
+        // intentar trasera con fallbacks (environment exact -> environment -> default)
+        async function getRearStream() {
+          try {
+            return await navigator.mediaDevices.getUserMedia({
+              audio: false,
+              video: { facingMode: { exact: "environment" } },
+            });
+          } catch (_) {
+            try {
+              return await navigator.mediaDevices.getUserMedia({
+                audio: false,
+                video: { facingMode: "environment" },
+              });
+            } catch (_) {
+              return await navigator.mediaDevices.getUserMedia({
+                audio: false,
+                video: true,
+              });
+            }
+          }
+        }
+
+        try {
+          mediaStream = await getRearStream();
+          video.srcObject = mediaStream;
+          video.classList.remove("hidden");
+          btnCapture.disabled = false;
+          btnStopCam.disabled = false;
+          await video.play();
+          // esperar un momento para que videoWidth/Height estén listos
+          await new Promise((r) => setTimeout(r, 200));
+          return true;
+        } catch (err) {
+          const name = err?.name || "";
+          const msg = err?.message || "";
+          let why = "Error al abrir la cámara.";
+          if (name === "NotAllowedError" || name === "SecurityError") {
+            why =
+              "Permiso denegado. Revisa permisos en el navegador (candado) y en el sistema.";
+          } else if (
+            name === "NotReadableError" ||
+            name === "TrackStartError"
+          ) {
+            why =
+              "La cámara está en uso por otra aplicación. Ciérrala e inténtalo otra vez.";
+          } else if (name === "NotFoundError") {
+            why = "No se encontró cámara disponible.";
+          }
+          alert(`${why}\n(${name}: ${msg})`);
+          console.error(err);
+          return false;
+        }
+      }
+
       function explainGetUserMediaError(err) {
         const name = err && err.name ? err.name : "";
         const msg = err && err.message ? err.message : "";
@@ -833,134 +899,45 @@
         }
       }
 
-      // Activa cámara con el botón "Activar cámara"
+      // Activar cámara manualmente (trasera)
       btnStartCam.addEventListener("click", async () => {
-        const ok = await ensureCamera();
-        if (!ok) return;
+        await ensureCamera();
       });
 
-      // Reemplaza tu listener de "Tomar foto" por este: auto-activa cámara si está apagada
+      // Tomar foto: auto-enciende la cámara si está apagada + anti-doble-foto
       btnCapture.addEventListener("click", async () => {
-        if (!(await ensureCamera())) return;
-
-        if (totalFotos() >= MAX_FOTOS) {
-          alert(`Máximo ${MAX_FOTOS} fotos en total.`);
-          return;
-        }
-        const w = video.videoWidth,
-          h = video.videoHeight;
-        if (!w || !h) {
-          alert(
-            "La cámara no está lista aún. Intenta de nuevo en 1-2 segundos."
-          );
-          return;
-        }
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/png");
-        capturedImages.push(dataUrl);
-        renderPreview();
-      });
-
-      function totalFotos() {
-        return uploadedImages.length + capturedImages.length;
-      }
-
-      function renderPreview() {
-        photoPreview.innerHTML = "";
-        const all = [
-          ...uploadedImages.map((b64, idx) => ({
-            b64,
-            src: b64,
-            from: "upload",
-            idx,
-          })),
-          ...capturedImages.map((b64, idx) => ({
-            b64,
-            src: b64,
-            from: "cam",
-            idx,
-          })),
-        ];
-        all.forEach((item) => {
-          const wrap = document.createElement("div");
-          wrap.className = "relative";
-          wrap.innerHTML = `
-      <img src="${item.src}" class="photo-preview"/>
-      <button type="button" class="absolute -top-2 -right-2 bg-red-600 text-white rounded-full w-7 h-7" title="Eliminar">✕</button>
-    `;
-          wrap.querySelector("button").addEventListener("click", () => {
-            if (item.from === "upload") uploadedImages.splice(item.idx, 1);
-            else capturedImages.splice(item.idx, 1);
-            renderPreview();
-          });
-          photoPreview.appendChild(wrap);
-        });
-      }
-
-      async function fileToBase64(file) {
-        return new Promise((res, rej) => {
-          const reader = new FileReader();
-          reader.onload = () => res(reader.result);
-          reader.onerror = rej;
-          reader.readAsDataURL(file);
-        });
-      }
-
-      fotosInput.addEventListener("change", async (e) => {
-        const files = Array.from(e.target.files);
-        for (const f of files) {
-          if (totalFotos() >= MAX_FOTOS) {
-            alert(`Máximo ${MAX_FOTOS} fotos en total.`);
-            break;
-          }
-          const b64 = await fileToBase64(f);
-          uploadedImages.push(b64);
-        }
-        fotosInput.value = "";
-        renderPreview();
-      });
-
-      btnStartCam.addEventListener("click", async () => {
-        try {
-          mediaStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: false,
-          });
-          video.srcObject = mediaStream;
-          video.classList.remove("hidden");
-          btnCapture.disabled = false;
-          btnStopCam.disabled = false;
-        } catch (err) {
-          alert("No se pudo acceder a la cámara: " + err.message);
-        }
-      });
-
-      btnCapture.addEventListener("click", async () => {
-        // Si no está activa, la enciendo y luego capturo
         const ready = await ensureCamera();
         if (!ready) return;
 
-        if (totalFotos() >= MAX_FOTOS) {
-          alert(`Máximo ${MAX_FOTOS} fotos en total.`);
-          return;
+        if (isCapturing) return; // evita que haga 2 capturas
+        isCapturing = true;
+
+        try {
+          if (totalFotos() >= MAX_FOTOS) {
+            alert(`Máximo ${MAX_FOTOS} fotos en total.`);
+            return;
+          }
+          const w = video.videoWidth,
+            h = video.videoHeight;
+          if (!w || !h) {
+            alert("La cámara aún no está lista, intenta de nuevo.");
+            return;
+          }
+          canvas.width = w;
+          canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(video, 0, 0, w, h);
+          const dataUrl = canvas.toDataURL("image/png");
+          capturedImages.push(dataUrl);
+          renderPreview();
+        } finally {
+          setTimeout(() => {
+            isCapturing = false;
+          }, 250); // debounce 250 ms
         }
-
-        const w = video.videoWidth,
-          h = video.videoHeight;
-        if (!w || !h) return;
-
-        canvas.width = w;
-        canvas.height = h;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(video, 0, 0, w, h);
-        const dataUrl = canvas.toDataURL("image/png");
-        capturedImages.push(dataUrl);
-        renderPreview();
       });
 
+      // Detener cámara
       btnStopCam.addEventListener("click", () => {
         if (mediaStream) {
           mediaStream.getTracks().forEach((t) => t.stop());
