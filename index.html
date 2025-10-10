@@ -779,6 +779,90 @@
       const btnCapture = document.getElementById("btnCapture");
       const btnStopCam = document.getElementById("btnStopCam");
 
+      // ===== Forzar cámara trasera en Edge/Chrome por deviceId =====
+      let isCapturing = false; // anti-doble captura
+      let rearDeviceId = null; // se resolverá tras el primer permiso
+
+      function delay(ms) {
+        return new Promise((r) => setTimeout(r, ms));
+      }
+
+      async function pickRearCameraDeviceId() {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const videos = devices.filter((d) => d.kind === "videoinput");
+
+        // Heurística: buscar "back", "rear", "environment"
+        const re = /(back|rear|environment)/i;
+        let rear = videos.find((v) => re.test(v.label));
+
+        // Si no hay etiqueta “rear/back”, Edge suele listar frontal primero y trasera después → usa la última.
+        if (!rear && videos.length > 1) rear = videos[videos.length - 1];
+
+        // Fallback: la única cámara disponible
+        if (!rear && videos.length >= 1) rear = videos[0];
+
+        return rear ? rear.deviceId : null;
+      }
+
+      async function ensureCamera() {
+        if (!isSecureContext) {
+          alert("⚠️ Necesitas HTTPS o http://localhost para usar la cámara.");
+          return false;
+        }
+        // Ya activa
+        if (mediaStream && !video.classList.contains("hidden")) return true;
+
+        try {
+          // 1) Si aún no tenemos deviceId trasero, primero pedimos permiso genérico (desbloquea labels en Edge)
+          if (!rearDeviceId) {
+            const tmp = await navigator.mediaDevices.getUserMedia({
+              video: true,
+              audio: false,
+            });
+            tmp.getTracks().forEach((t) => t.stop()); // cerramos stream temporal
+            await delay(100); // pequeña espera para que aparezcan labels
+            rearDeviceId = await pickRearCameraDeviceId();
+          }
+
+          // 2) Si aún así no se detecta, volvemos a intentar enumerar
+          if (!rearDeviceId) rearDeviceId = await pickRearCameraDeviceId();
+
+          // 3) Abrimos específicamente la cámara trasera por deviceId (o la disponible)
+          const constraints = rearDeviceId
+            ? { audio: false, video: { deviceId: { exact: rearDeviceId } } }
+            : { audio: false, video: true };
+
+          mediaStream = await navigator.mediaDevices.getUserMedia(constraints);
+          video.srcObject = mediaStream;
+          video.classList.remove("hidden");
+          btnCapture.disabled = false;
+          btnStopCam.disabled = false;
+
+          await video.play();
+          await delay(150); // asegura videoWidth/Height listos
+          return true;
+        } catch (err) {
+          const name = err?.name || "";
+          const msg = err?.message || "";
+          let why = "Error al abrir la cámara.";
+          if (name === "NotAllowedError" || name === "SecurityError") {
+            why =
+              "Permiso denegado. Revisa permisos en el navegador (candado) y en el sistema.";
+          } else if (
+            name === "NotReadableError" ||
+            name === "TrackStartError"
+          ) {
+            why =
+              "La cámara está en uso por otra app. Cierra otras aplicaciones que la usen.";
+          } else if (name === "NotFoundError") {
+            why = "No se encontró cámara disponible.";
+          }
+          alert(`${why}\n(${name}: ${msg})`);
+          console.error(err);
+          return false;
+        }
+      }
+
       // --- ADICIÓN: control y encendido de cámara trasera ---
       let isCapturing = false; // evita doble disparo
 
@@ -899,17 +983,17 @@
         }
       }
 
-      // Activar cámara manualmente (trasera)
+      // Activar cámara (intentará trasera por deviceId)
       btnStartCam.addEventListener("click", async () => {
         await ensureCamera();
       });
 
-      // Tomar foto: auto-enciende la cámara si está apagada + anti-doble-foto
+      // Tomar foto: auto-enciende + anti-doble-foto
       btnCapture.addEventListener("click", async () => {
         const ready = await ensureCamera();
         if (!ready) return;
 
-        if (isCapturing) return; // evita que haga 2 capturas
+        if (isCapturing) return; // evita 2 fotos
         isCapturing = true;
 
         try {
@@ -933,7 +1017,7 @@
         } finally {
           setTimeout(() => {
             isCapturing = false;
-          }, 250); // debounce 250 ms
+          }, 250); // debounce
         }
       });
 
